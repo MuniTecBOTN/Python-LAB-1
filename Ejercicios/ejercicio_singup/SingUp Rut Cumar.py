@@ -10,7 +10,8 @@ ventana.grid_rowconfigure(0, weight=1)
 
 #Frame principal------------------------------------------------------------------------------
 frame_principal= CTkFrame(master=ventana,
-                          corner_radius=0)
+                          corner_radius=0
+                          )
 frame_principal.grid(row=0, column=0, sticky= "nsew", padx=10, pady=10)
 frame_principal.grid_columnconfigure(0, weight=1)
 frame_principal.grid_rowconfigure(1, weight=2)
@@ -20,7 +21,8 @@ frame_principal.grid_rowconfigure(2, weight=1)
 #Frame Titulo------------------------------------------------------------------------------
 
 frame_titulo=CTkFrame(master=frame_principal,
-                     corner_radius=0)
+                     corner_radius=0,
+                     fg_color="transparent")
 frame_titulo.grid(row=0, column=0, sticky= "nsew", padx=10, pady=10)
 frame_titulo.grid_columnconfigure(0, weight=1)
 frame_titulo.grid_rowconfigure(0, weight=1)
@@ -142,7 +144,8 @@ etiqueta_cont.grid(row=5,column=0,sticky ="e",padx=20)
 
 #Frame boton------------------------------------------------------------------------------
 frame_boton= CTkFrame(master=frame_principal,
-                      corner_radius=0)
+                      corner_radius=0,
+                      fg_color="transparent")
 frame_boton.grid(row=2, column=0, sticky= "nsew", padx=10, pady=10)
 frame_boton.grid_columnconfigure(0, weight=1)
 frame_boton.grid_rowconfigure(0, weight=1)
