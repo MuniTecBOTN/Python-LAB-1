@@ -16,7 +16,6 @@ def funcion_boton_sumar():
     else:
         suma_2.configure(border_color="#D0BFE6")
     
-
 set_default_color_theme("blue")
 set_appearance_mode("light")
 
