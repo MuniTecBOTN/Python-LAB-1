@@ -1,0 +1,126 @@
+from customtkinter import *
+
+set_default_color_theme("dark-blue")
+
+ventana = CTk()
+ventana.title("Sumatoria rápida")
+ventana.geometry("800x600")
+
+# acá se configuran las columnas, con el weight se le da un peso a cada columna, 
+# para que se redimensionen de forma proporcional
+ventana.grid_columnconfigure(0, weight=1)
+
+
+# acá se configuran las filas, con el weight se le da un peso a cada fila,
+# para que se redimensionen de forma proporcional
+ventana.grid_rowconfigure(0, weight=1)
+
+# acá se crea un frame, que es un contenedor para otros widgets
+# ------------------------------------------------------------------------------
+frame_principal = CTkFrame(master=ventana, 
+                           width = 300,
+                           height = 200,
+                           fg_color="#CF9ECF",
+                           corner_radius=0,
+                           border_color="#5A7DF006")
+
+frame_principal.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+
+frame_principal.grid_columnconfigure(0, weight=1)
+frame_principal.grid_columnconfigure(1, weight=1)
+frame_principal.grid_columnconfigure(2, weight=1)
+frame_principal.grid_rowconfigure(0, weight=1 )
+frame_principal.grid_rowconfigure(1, weight=1)
+
+campo_primer_numero = CTkEntry(
+    master=frame_principal,
+    width=90,
+    height=60,
+    corner_radius=0,
+    placeholder_text="Número",
+    font=("Arial black", 16),
+    text_color="#E097DA",
+    border_color="#CF9ECF",
+    justify = "center"
+)
+
+campo_primer_numero.grid(
+    row=0,
+    column=0,)
+
+campo_segundo_numero = CTkEntry(
+    master=frame_principal,
+    width=90,
+    height=60,
+    corner_radius=0,
+    placeholder_text="Número",
+    font=("Arial black", 16),
+    text_color="#E097DA",
+    border_color="#CF9ECF",
+    justify = "center"
+)
+
+campo_segundo_numero.grid(
+    row=0,
+    column=1,)
+
+
+etiqueta_1 = CTkLabel(
+    master=frame_principal,
+    fg_color="transparent",
+    text="Resultado",
+    font=("Arial black", 16),
+     text_color="#6E0C66",
+    
+    
+)
+etiqueta_1.grid(
+    row=0,
+    column=2,
+)
+
+
+def funcion_boton_1():
+    numero_a = campo_primer_numero.get().stirp()
+    numero_b = campo_segundo_numero.get().strip()
+    
+    if not numero_a:
+        campo_primer_numero.configure(border_color = "red")
+        return
+    else:
+        campo_primer_numero.configure(border_color = "#73da7c")
+    
+    if not numero_b:
+        campo_segundo_numero.configure(border_color = "red")
+        return
+    else:
+        campo_segundo_numero.configure(border_color = "#73da7c")
+    
+
+
+
+boton_sumar = CTkButton(
+    master=frame_principal,
+    width=90,
+    height=60,
+    corner_radius=0,
+    text="Sumar",
+    anchor="center",
+    font=("Arial black", 16),
+    text_color="#FFFFFF",
+    border_color="#CF9ECF",
+    command=funcion_boton_1,
+)
+
+boton_sumar.grid(
+    row=1,
+    column=1,
+)
+
+
+
+
+
+ventana.mainloop()
+
+
