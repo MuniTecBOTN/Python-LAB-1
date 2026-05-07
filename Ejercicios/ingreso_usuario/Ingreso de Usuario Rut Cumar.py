@@ -5,7 +5,7 @@ set_appearance_mode("light")
 
 ventana = CTk()
 ventana.title("Registro de Usuario")
-ventana.geometry("500x700")
+ventana.geometry("480x750")
 ventana.grid_columnconfigure(0, weight=1)
 ventana.grid_rowconfigure(0, weight=1)
 
@@ -16,24 +16,25 @@ frame_principal= CTkFrame(master=ventana,
 frame_principal.grid(row=0, column=0, sticky= "nsew", padx=10, pady=10)
 frame_principal.grid_columnconfigure(0, weight=1)
 
-frame_principal.grid_rowconfigure(0, weight=1)
-frame_principal.grid_rowconfigure(1, weight=1)
-frame_principal.grid_rowconfigure(2, weight=1)
+frame_principal.grid_rowconfigure(0, weight=8)
+frame_principal.grid_rowconfigure(1, weight=15)
+frame_principal.grid_rowconfigure(2, weight=5)
+frame_principal.grid_rowconfigure(3, weight=1)
 
 #FRAME SUPERIOR------------------------------------------------------------------------------
 frame_superior= CTkFrame(master=frame_principal,
                          fg_color="#2a00ac",
                          corner_radius=0)
-frame_superior.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+frame_superior.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
 frame_superior.grid_columnconfigure(0, weight=1)
 frame_superior.grid_rowconfigure(0, weight=1)
 
-texto_superior = CTkLabel(master=frame_superior,
+texto_TITULO = CTkLabel(master=frame_superior,
                           text="REGISTRO DE USUARIO",
                           font=("Montserrat", 20, "bold"),
                           text_color="#ffffff")
 
-texto_superior.grid(row=0,column=0,)
+texto_TITULO.grid(row=0,column=0,)
 
 #FRAME DATOS TEXTO ------------------------------------------------------------------------------
 
@@ -49,6 +50,67 @@ frame_datos.grid_rowconfigure(2, weight=1)
 frame_datos.grid_rowconfigure(3, weight=1)
 frame_datos.grid_rowconfigure(4, weight=1)
 frame_datos.grid_rowconfigure(5, weight=3)
+
+#DATOS------------------------------------------------------------------------------
+def capturar_datos():
+    nombre=campo_nombre.get().strip().lower()
+    correo=campo_correo.get().strip().lower()
+    edad=campo_edad.get().strip()
+    pais=pais_seleccionado.get()
+    profesion=menu_profesion.get()
+    genero=genero_seleccionado.get()
+    etiqueta_informacion.configure(text="DATOS CAPTURADOS CORRECTAMENTE")
+    
+    #----------------------------------ERRORES----------------------------------------------------------------------------------------
+    if ( not nombre
+       or not correo
+       or not edad
+       or pais== "Selec. un País"
+       or profesion == "Selec. una Profesión"
+       or genero == 0):
+       etiqueta_informacion.configure(text="por favor, completa todos los datos")
+       etiqueta_informacion.after(2000,lambda:etiqueta_informacion.configure(text=""))
+       return    
+    if not nombre.isalpha():
+         etiqueta_informacion.configure(text="El nombre no puede tener numeros")
+         etiqueta_informacion.after(2000,lambda:etiqueta_informacion.configure(text=""))
+         campo_nombre.configure(border_color="#b84747")
+         campo_nombre.after(2000,lambda:campo_nombre.configure(border_color="#e3e5f3"))
+         return
+    if len(nombre)<3:
+        etiqueta_informacion.configure(text="El nombre tiene que tener mas de tres letras")
+        etiqueta_informacion.after(2000,lambda:etiqueta_informacion.configure(text=""))
+        campo_nombre.configure(border_color="#b84747")
+        campo_nombre.after(2000,lambda:campo_nombre.configure(border_color="#e3e5f3"))
+        return
+    if not edad.isdigit():
+        etiqueta_informacion.configure(text="Por favor, ingrese unicamente numeros")
+        etiqueta_informacion.after(2000,lambda:etiqueta_informacion.configure(text=""))
+        campo_edad.configure(border_color="#b84747")
+        campo_edad.after(2000,lambda:campo_edad.configure(border_color="#e3e5f3"))
+        return
+    if len(edad)>2:
+        etiqueta_informacion.configure(text="No puede ingresar mas de 2 digitos")
+        etiqueta_informacion.after(2000,lambda:etiqueta_informacion.configure(text=""))
+        campo_edad.configure(border_color="#b84747")
+        campo_edad.after(2000,lambda:campo_edad.configure(border_color="#e3e5f3"))
+        return
+    correos_validos=["@gmail.com", "@hotmail.com", "@yahoo.com", "@outlook.com"]
+    if not correo.endswith(tuple(correos_validos)):
+        etiqueta_informacion.configure(text="Por favor, ingrese un correo valido")
+        etiqueta_informacion.after(2000,lambda:etiqueta_informacion.configure(text=""))
+        campo_correo.configure(border_color="#b84747")
+        campo_correo.after(2000,lambda:campo_correo.configure(border_color="#e3e5f3"))
+        return
+    
+    
+def limpiar():
+    campo_nombre.delete(0,END)
+    campo_correo.delete(0,END)
+    campo_edad.delete(0,END)
+    pais_seleccionado.set("Selec. un País")
+    menu_profesion.set("Selec. una Profesión")
+    genero_seleccionado.set(0)
 
 #ETIQUETAS------------------------------------------------------------------------------
 etiqueta_nombre= CTkLabel(master=frame_datos,
@@ -230,25 +292,9 @@ radio_otro = CTkRadioButton(
     text_color="#2A00AC"
 )
 
-radio_femenino.grid(
-    row=0,
-    column=0,
-    sticky="wn",
-    padx=10
-)
-radio_masculino.grid(
-    row=1,
-    column=0,
-    sticky="wn",
-    padx=10,
-    pady=5
-)
-radio_otro.grid(
-    row=2,
-    column=0,
-    sticky="wn",
-    padx=10
-)
+radio_femenino.grid( row=0,column=0,sticky="wn",padx=10)
+radio_masculino.grid(row=1,column=0,sticky="wn",padx=10,pady=5)
+radio_otro.grid(row=2,column=0,sticky="wn",padx=10)
 
 #FRAME INFERIOR------------------------------------------------------------------------------
 frame_inferior= CTkFrame(master=frame_principal,
@@ -264,22 +310,44 @@ boton_1 = CTkButton (master=frame_inferior,
                     height=60,
                     corner_radius=0,
                     fg_color="#2a00ac",
-                    hover_color="#3811b0",
+                    hover_color="#81dc00",
                     text="Enviar",
                     anchor="center",
+                    command=capturar_datos,
                     font=("Montserrat", 16))
 boton_1.grid( row=0, column=0,)
 
 boton_2 = CTkButton (master=frame_inferior,
-                    width=120,
+                    width=120, 
                     height=60,
                     corner_radius=0,
                     fg_color="#2a00ac",
-                    hover_color="#3811b0",
-                    text="Limpiar",
+                    hover_color="#81dc00",
+                    text="limpiar",
                     anchor="center",
+                    command=limpiar,
                     font=("Montserrat", 16))
 boton_2.grid( row=0, column=1,)
+
+#ETIQUETA------------------------------------------------------------------------------
+frame_etiqueta= CTkFrame(master=frame_principal,
+                          corner_radius=0,
+                          height=100,
+                          width=320,
+                          fg_color="transparent")
+
+frame_etiqueta.grid(row = 3, column = 0 , sticky = "sew")
+frame_etiqueta.grid_columnconfigure(0,weight=1)
+frame_etiqueta.grid_rowconfigure(0,weight=1)
+frame_etiqueta.grid_propagate(False)
+
+etiqueta_informacion = CTkLabel(
+    master=frame_etiqueta,
+    fg_color="transparent",
+    text="",
+    anchor = "center",
+    font=("Montserrat", 16),)
+etiqueta_informacion.grid(row=0,column=0,sticky="nswe")
 
 
 ventana.mainloop()
