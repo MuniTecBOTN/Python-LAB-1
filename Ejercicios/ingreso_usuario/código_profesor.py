@@ -1,5 +1,4 @@
 from customtkinter import *
-import psycopg2
 # ------------------ CONFIGURACIÓN ------------------
 set_appearance_mode("light")
 set_default_color_theme("dark-blue")
@@ -38,13 +37,8 @@ frame_datos.grid_propagate(False)
 frame_datos.grid_columnconfigure(0, weight=1)
 frame_datos.grid_columnconfigure(1, weight=1)
 
-frame_datos.grid_rowconfigure(0, weight=1, minsize=50)
-frame_datos.grid_rowconfigure(1, weight=1, minsize=50)
-frame_datos.grid_rowconfigure(2, weight=1, minsize=50)
-frame_datos.grid_rowconfigure(3, weight=1, minsize=50)
-frame_datos.grid_rowconfigure(4, weight=1, minsize=50)
-frame_datos.grid_rowconfigure(5, weight=1, minsize=50)
-frame_datos.grid_rowconfigure(6, weight=1, minsize=50)
+for i in range(7):
+    frame_datos.grid_rowconfigure(i, weight=1, minsize=50)
 
 # ------------------- FRAME INFERIOR ------------------
 frame_inferior = CTkFrame(master=frame_principal,width=420, height=80, fg_color="transparent", corner_radius=0)
@@ -56,6 +50,11 @@ frame_inferior.grid_propagate(False)
 
 
 # ------------------ FUNCIONES ---------------
+# get() es el método para obtener el valor de las entradas
+# strip() para eliminar espacios al inicio y al final 
+# lower() para convertir a minúsculas
+# al aplicar los tres metodos juntos, se obtiene el valor ingresado por el usuario, 
+# sin espacios al inicio o al final, y en minúsculas (estandarizar el formato del dato)
 
 def capturar_datos():
     nombre = campo_nombre.get().strip().lower()
@@ -65,7 +64,31 @@ def capturar_datos():
     profesion = profesion_seleccionada.get().strip()
     genero = genero_seleccionado.get() 
 
+    if( not nombre 
+       or not correo 
+       or not edad 
+       or pais == "SELECCIONA" 
+       or profesion == "SELECCIONA" 
+       or genero == 0):
+        etiqueta_informacion.configure(text="Por favor, completa todos los campos")
+        etiqueta_informacion.after(2000, lambda: etiqueta_informacion.configure(text=""))
+        return
 
+    if  not nombre.isalpha():
+        etiqueta_informacion.configure(text="El nombre no puede contener números")
+        etiqueta_informacion.after(2000, lambda: etiqueta_informacion.configure(text=""))
+        return
+    
+    if len(nombre) < 3:
+        etiqueta_informacion.configure(text="El nombre debe tener al menos 3 caracteres")
+        etiqueta_informacion.after(2000, lambda: etiqueta_informacion.configure(text=""))
+        return
+    
+    lista_extensiones_validas = ["@gmail.com", "@hotmail.com", "@yahoo.com", "@outlook.com"]
+    if not correo.endswith(tuple(lista_extensiones_validas)):
+        etiqueta_informacion.configure(text="Por favor, ingrese un correo valido.")
+        etiqueta_informacion.after(2000, lambda: etiqueta_informacion.configure(text=""))
+        return
     
 def limpiar():
     campo_nombre.delete(0, "end")
@@ -265,10 +288,8 @@ frame_radios = CTkFrame(master=frame_datos, fg_color="transparent", corner_radiu
 frame_radios.grid(row=5, column=1, sticky="W")
 
 frame_radios.grid_columnconfigure(0, weight=1)
-frame_radios.grid_rowconfigure(0, weight=1)
-frame_radios.grid_rowconfigure(1, weight=1)
-frame_radios.grid_rowconfigure(2, weight=1)
-
+for i in range(3):
+    frame_radios.grid_rowconfigure(i, weight=1) 
 genero_seleccionado = IntVar(value=0)
 
 radio_femenino = CTkRadioButton(
