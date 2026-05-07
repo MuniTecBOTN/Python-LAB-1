@@ -62,7 +62,7 @@ frame_inferior.grid(row=2, column=0, sticky="nsew", padx=10, pady=10)
 frame_inferior.grid_columnconfigure(0, weight=1)
 frame_inferior.grid_columnconfigure(1, weight=1)
 frame_inferior.grid_rowconfigure(0, weight=1)
-
+frame_inferior.grid_rowconfigure(1, weight=1)
 
 
 
@@ -162,7 +162,7 @@ etiqueta_7.grid(row=5,
 )
 caja_textonombre = CTkEntry(
     master=frame_medio,
-    width=150,
+    width=180,
     height=40,
     border_width=0,
     corner_radius=0,
@@ -175,8 +175,8 @@ caja_textonombre.grid(
 )
 caja_textcorreo = CTkEntry(
     master=frame_medio,
-    width=150,
-    height=45,
+    width=180,
+    height=40,
     border_width=0,
     corner_radius=0,
     
@@ -189,8 +189,8 @@ caja_textcorreo.grid(
 )
 caja_textoedad = CTkEntry(
     master=frame_medio,
-    width=150,
-    height=45,
+    width=180,
+    height=40,
     border_width=0,
     corner_radius=0,
     font=("Montserrat", 16),
@@ -209,11 +209,12 @@ caja_textoedad.grid(
 
 
 lista_opciones = ["GUATEMALA", "PERU", "COLOMBIA","MEXICO"]
-país_selecionado = StringVar(value="GUATEMALA")
+país_selecionado = StringVar(value="SELECCIONA")
 menu_opciones = CTkOptionMenu(
     master=frame_medio,
     fg_color="#FFFFFF",
     width=180,
+    height=40,
     corner_radius=0,
     dynamic_resizing=False,
     values=lista_opciones,
@@ -231,16 +232,17 @@ menu_opciones.grid(
 
 
 lista_opciones = ["PROGRAMADOR", "DISEÑADOR", "CHEF","CONTADOR"]
-profesion = StringVar(value="PROGAMADOR")
+profesion_selecionado = StringVar(value="SELECCIONA")
 
 menu_opciones = CTkOptionMenu(
     fg_color="#ffffff",
     master=frame_medio,
     width=180,
+    height=40,
     corner_radius=0,
     dynamic_resizing=False,
     values=lista_opciones,
-    variable=profesion,
+    variable=profesion_selecionado,
     text_color="#2a00ac",
     font=("Montserrat", 16),
     button_color="#81dc00"
@@ -278,7 +280,6 @@ radio_femenino = CTkRadioButton(
 radiomasculino = CTkRadioButton(
     master=frame_mediobajo,
     text="MASCULINO",
-    
     value=2,
     variable=genero_selecionado,
     font=("Montserrat", 16),
@@ -295,36 +296,103 @@ radio_femenino.grid(
     row=0,
     column=0,
     sticky="w",
-    padx="10"
+    padx="10",
+    pady=8,
 )
 radiomasculino.grid(
     row=1,
     column=0,
     sticky="w",
-    padx="10"
+    padx="10",
+    pady=8,
 )
 radio_otro.grid(
     row=2,
     column=0,
     sticky="w",
-    padx="10"
+    padx="10",
+    pady=8,
 )
 
+
+
+def capturar_Datos():
+    nombre = caja_textonombre.get().strip().lower()
+    correo = caja_textcorreo.get().strip().lower()
+    edad = caja_textoedad.get().strip().lower()
+    país = país_selecionado.get().strip()
+    profesion = profesion_selecionado.get().strip()
+    genero= genero_selecionado.get()
+    if(
+        not nombre or not correo or país=="SELECCIONA"or profesion=="SELECCIONA" or genero==0):
+        etiqueta_resultado.configure(text="por favor ,completa todos los campos")
+    
+    print("se guardo correctamente tus datos ")
+    print(f"{nombre}")
+    print(f"{correo}")
+    print(f"{edad}")
+    print(f"{país}")
+    print(f"{profesion}")
+    print(f"{genero}") 
+    
+       
+def limpiar_datos():
+    caja_textonombre.delete(0,END)
+    caja_textcorreo.delete(0,END)
+    caja_textoedad.delete(0,END)
+    país_selecionado.set("selecciona una opcion")
+    profesion_selecionado.set("selecciona una opcion")
+    genero_selecionado.set(0)
+    
+    
+    
+    
+    
 boton_1 = CTkButton(
     master=frame_inferior,
-    width=80,
-    height=30,
+    width=150,
+    height=40,
     corner_radius=0,
-    text="Haz Click",
+    text="Guardar datos",
     anchor="center",
     font=("Montserrat", 16),
+    command=capturar_Datos,
+)
+boton_2 = CTkButton(
+    master=frame_inferior,
+    width=150,
+    height=40,
+    corner_radius=0,
+    text="limpiar",
+    anchor="center",
+    font=("Montserrat",16),
+   command=limpiar_datos,
 )
 
 boton_1.grid(
     row=0,
     column=0,
+    sticky="e",
+   
+)
+boton_2.grid(
+    row=0,
+    column=1,
+    sticky="w",
+     padx=8
 )
 
+etiqueta_resultado = CTkLabel(
+    master=frame_inferior,
+    fg_color="transparent",
+    text="Esta es una etiqueta",
+    font=("Montserrat", 16),
+)
+etiqueta_resultado.grid(
+    row=1,
+    column=0,
+    sticky="e",
+)
 
 
 
