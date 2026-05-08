@@ -1,0 +1,394 @@
+from customtkinter import *
+import string
+import secrets
+import random
+
+# =========================================================
+# CONFIGURACIÓN GLOBAL
+# =========================================================
+set_appearance_mode("light")
+set_default_color_theme("dark-blue")
+
+# =========================================================
+# COLORES
+# =========================================================
+COLOR_FONDO = "#e3e5f3"
+COLOR_AZUL = "#2a00ac"
+COLOR_VERDE = "#81dc00"
+COLOR_BLANCO = "#ffffff"
+
+# =========================================================
+# VENTANA
+# =========================================================
+ventana = CTk()
+
+ventana.title("Generador de Contraseñas")
+ventana.geometry("600x600")
+
+ventana.grid_columnconfigure(0, weight=1)
+ventana.grid_rowconfigure(0, weight=1)
+
+# =========================================================
+# FRAME PRINCIPAL
+# =========================================================
+frame_principal = CTkFrame(
+    master=ventana,
+    fg_color=COLOR_FONDO,
+    corner_radius=0
+)
+
+frame_principal.grid(
+    row=0,
+    column=0,
+    sticky="nsew",
+    padx=10,
+    pady=10
+)
+
+frame_principal.grid_columnconfigure(0, weight=1)
+
+# =========================================================
+# FRAME TÍTULO
+# =========================================================
+frame_titulo = CTkFrame(
+    master=frame_principal,
+    height=80,
+    fg_color=COLOR_AZUL,
+    corner_radius=0
+)
+
+frame_titulo.grid(
+    row=0,
+    column=0,
+    sticky="ew"
+)
+
+frame_titulo.grid_columnconfigure(0, weight=1)
+
+# =========================================================
+# TÍTULO
+# =========================================================
+titulo = CTkLabel(
+    master=frame_titulo,
+    text="GENERADOR DE CONTRASEÑAS",
+    font=("Montserrat", 22, "bold"),
+    text_color=COLOR_BLANCO
+)
+
+titulo.grid(
+    row=0,
+    column=0,
+    pady=20
+)
+
+# =========================================================
+# FRAME CONTENIDO
+# =========================================================
+frame_contenido = CTkFrame(
+    master=frame_principal,
+    fg_color="transparent",
+    corner_radius=0
+)
+
+frame_contenido.grid(
+    row=1,
+    column=0,
+    padx=20,
+    pady=20,
+    sticky="n"
+)
+
+frame_contenido.grid_columnconfigure(0, weight=1)
+
+# =========================================================
+# FUNCIONES
+# =========================================================
+def generar_contrasena():
+    longitud = int(slider_longitud.get())
+    
+    caracteres = ""
+    contrasena = ""
+
+    if var_minusculas.get():
+        caracteres += string.ascii_lowercase
+        contrasena += secrets.choice(string.ascii_lowercase)
+
+    if var_mayusculas.get():
+        caracteres += string.ascii_uppercase
+        contrasena += secrets.choice(string.ascii_uppercase)
+
+    if var_numeros.get():
+        caracteres += string.digits
+        contrasena += secrets.choice(string.digits)
+
+    if var_simbolos.get():
+        caracteres += string.punctuation
+        contrasena += secrets.choice(string.punctuation)
+
+    if not caracteres:
+        entry_resultado.delete(0, "end")
+        entry_resultado.insert(0,"Selecciona al menos una opción")
+        return
+
+    for i in range(longitud - len(contrasena)):
+        contrasena += secrets.choice(caracteres)
+        
+    contrasena = "".join(random.sample(contrasena, len(contrasena)))
+    
+    entry_resultado.delete(0, "end")
+    entry_resultado.insert(0, contrasena)
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def copiar_portapapeles():
+
+    ventana.clipboard_clear()
+    ventana.clipboard_append(entry_resultado.get())
+
+    label_estado.configure(
+        text="Contraseña copiada al portapapeles"
+    )
+
+
+def actualizar_label_longitud(valor):
+
+    label_longitud.configure(text=f"LONGITUD: {int(valor)}")
+
+# =========================================================
+# LABEL LONGITUD
+# =========================================================
+label_longitud = CTkLabel(
+    frame_contenido,
+    text="LONGITUD: 12",
+    width=200,
+    height=30,
+    fg_color=COLOR_VERDE,
+    text_color=COLOR_BLANCO,
+    corner_radius=0,
+    font=("Montserrat", 16)
+)
+
+label_longitud.grid(
+    row=0,
+    column=0,
+    pady=(10, 20)
+)
+
+# =========================================================
+# SLIDER
+# =========================================================
+slider_longitud = CTkSlider(
+    frame_contenido,
+    from_=4,
+    to=32,
+    command=actualizar_label_longitud,
+    button_color=COLOR_VERDE,
+    button_hover_color=COLOR_VERDE,
+    progress_color=COLOR_AZUL,
+    fg_color=COLOR_BLANCO,
+    corner_radius=0,
+    button_corner_radius=50
+)
+
+slider_longitud.set(12)
+
+slider_longitud.grid(
+    row=1,
+    column=0,
+    padx=20,
+    pady=10,
+    sticky="ew"
+)
+
+# =========================================================
+# VARIABLES
+# =========================================================
+var_minusculas = BooleanVar(value=True)
+var_mayusculas = BooleanVar(value=True)
+var_numeros = BooleanVar(value=True)
+var_simbolos = BooleanVar(value=False)
+
+# =========================================================
+# ESTILO CHECKBOX
+# =========================================================
+estilo_checkbox = {
+    "font": ("Montserrat", 15),
+    "text_color": COLOR_AZUL,
+    "fg_color": COLOR_VERDE,
+    "hover_color": COLOR_VERDE,
+    "border_color": COLOR_AZUL,
+    "corner_radius": 0
+}
+
+# =========================================================
+# CHECKBOXES
+# =========================================================
+check_minusculas = CTkCheckBox(
+    frame_contenido,
+    text="INCLUIR MINÚSCULAS (a-z)",
+    variable=var_minusculas,
+    **estilo_checkbox
+)
+
+check_minusculas.grid(
+    row=2,
+    column=0,
+    sticky="w",
+    pady=5
+)
+
+check_mayusculas = CTkCheckBox(
+    frame_contenido,
+    text="INCLUIR MAYÚSCULAS (A-Z)",
+    variable=var_mayusculas,
+    **estilo_checkbox
+)
+
+check_mayusculas.grid(
+    row=3,
+    column=0,
+    sticky="w",
+    pady=5
+)
+
+check_numeros = CTkCheckBox(
+    frame_contenido,
+    text="INCLUIR NÚMEROS (0-9)",
+    variable=var_numeros,
+    **estilo_checkbox
+)
+
+check_numeros.grid(
+    row=4,
+    column=0,
+    sticky="w",
+    pady=5
+)
+
+check_simbolos = CTkCheckBox(
+    frame_contenido,
+    text="INCLUIR SÍMBOLOS (!@#...)",
+    variable=var_simbolos,
+    **estilo_checkbox
+)
+
+check_simbolos.grid(
+    row=5,
+    column=0,
+    sticky="w",
+    pady=5
+)
+
+# =========================================================
+# ENTRY RESULTADO
+# =========================================================
+entry_resultado = CTkEntry(
+    frame_contenido,
+    width=350,
+    height=35,
+    corner_radius=0,
+    border_color=COLOR_FONDO,
+    text_color=COLOR_AZUL,
+    justify="center",
+    font=("Montserrat", 16)
+)
+
+entry_resultado.grid(
+    row=6,
+    column=0,
+    padx=20,
+    pady=30,
+    sticky="ew"
+)
+
+# =========================================================
+# ESTILO BOTONES
+# =========================================================
+estilo_botones = {
+    "width": 220,
+    "height": 35,
+    "corner_radius": 0,
+    "fg_color": COLOR_AZUL,
+    "hover_color": COLOR_VERDE,
+    "text_color": COLOR_BLANCO,
+    "font": ("Montserrat", 16, "bold")
+}
+
+# =========================================================
+# BOTÓN GENERAR
+# =========================================================
+boton_generar = CTkButton(
+    frame_contenido,
+    text="GENERAR",
+    command=generar_contrasena,
+    **estilo_botones
+)
+
+boton_generar.grid(
+    row=7,
+    column=0,
+    pady=10
+)
+
+# =========================================================
+# BOTÓN COPIAR
+# =========================================================
+boton_copiar = CTkButton(
+    frame_contenido,
+    text="COPIAR AL PORTAPAPELES",
+    command=copiar_portapapeles,
+    **estilo_botones
+)
+
+boton_copiar.grid(
+    row=8,
+    column=0,
+    pady=10
+)
+
+# =========================================================
+# LABEL ESTADO
+# =========================================================
+label_estado = CTkLabel(
+    frame_contenido,
+    text="",
+    font=("Montserrat", 13, "bold"),
+    text_color=COLOR_AZUL
+)
+
+label_estado.grid(
+    row=9,
+    column=0,
+    pady=(20, 10)
+)
+
+# =========================================================
+# MAIN LOOP
+# =========================================================
+ventana.mainloop()
