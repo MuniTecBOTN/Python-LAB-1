@@ -38,7 +38,7 @@ titulo = CTkLabel(
     anchor="center",
     font=("Montserrat", 20, "bold"))
 
-titulo.grid(row=0,column=0, padx=5, pady=0)
+titulo.grid(row=0,column=0, padx=4, pady=0)
 
 #DEFINICIONES---------------------------------------------------------------
 def porcentaje_longitud(valor):
@@ -53,7 +53,7 @@ def generar_contra():
         caracteres+= string.ascii_lowercase
         contraseña+= secrets.choice(string.ascii_lowercase)
     
-    if may_checkbox.get:
+    if may_checkbox.get():
         caracteres+= string.ascii_uppercase
         contraseña+= secrets.choice(string.ascii_uppercase)
     
@@ -76,8 +76,18 @@ def generar_contra():
         
     contraseña="".join(random.sample(contraseña, len(contraseña)))
     
-    contra_text.configure(text = f"{contraseña}")
-        
+    contra_text.delete(0, "end")
+    contra_text.insert(0, contraseña)        
+    
+def copiar_texto():
+    texto = contra_text.get()
+    
+    if texto == "":
+        return 
+    
+    ventana.clipboard_clear()
+    ventana.clipboard_append(texto)
+    
 #FRAME BARRITA-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 frame_barrita=CTkFrame(master=frame_principal,
                        corner_radius=0,
@@ -95,7 +105,7 @@ slider = CTkSlider(
     command=porcentaje_longitud,
     variable=valor_slider,
     number_of_steps=100)
-slider.grid(row=0, column=0, sticky="ew", padx=50)
+slider.grid(row=0, column=0, sticky="ew", padx=40)
 
 longitud_text = CTkLabel(
     master=frame_barrita,
@@ -115,19 +125,19 @@ frame_chequesitos.grid_columnconfigure(0, weight=1)
 frame_chequesitos.grid_rowconfigure(0, weight=1)
 frame_chequesitos.grid_rowconfigure(1, weight=1)
 frame_chequesitos.grid_rowconfigure(2, weight=1)
-frame_chequesitos.grid_rowconfigure(2, weight=1)
+frame_chequesitos.grid_rowconfigure(3, weight=1)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 min_checkbox = BooleanVar(value=False)
 texto_checkbox = StringVar(value="Incluir minúsculas (a-z)")
 checkbox_minusc = CTkCheckBox(
     master=frame_chequesitos,
-    checkbox_width=25,
-    checkbox_height=25,
+    checkbox_width=24,
+    checkbox_height=24,
     fg_color="#90eb66",
     checkmark_color="#ffffff",
     hover_color="#ffffff",
-    corner_radius=5,
+    corner_radius=4,
     border_width=3,
     text="Incluir minúsculas (a-z)",
     textvariable = texto_checkbox,
@@ -136,18 +146,18 @@ checkbox_minusc = CTkCheckBox(
     variable=min_checkbox,
     font=("Montserrat", 16, "bold"),
 )
-checkbox_minusc.grid(row=0,column=0,pady=5, sticky="w")
+checkbox_minusc.grid(row=0,column=0,pady=4, sticky="w")
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 may_checkbox = BooleanVar(value=False)
 texto_checkbox = StringVar(value="Incluir mayúsculas (A-Z)")
 checkbox_minusc = CTkCheckBox(
     master=frame_chequesitos,
-    checkbox_width=25,
-    checkbox_height=25,
+    checkbox_width=24,
+    checkbox_height=24,
     fg_color="#90eb66",
     checkmark_color="#ffffff",
     hover_color="#ffffff",
-    corner_radius=5,
+    corner_radius=4,
     border_width=3,
     text="Incluir mayúsculas (A-Z)",
     textvariable = texto_checkbox,
@@ -156,18 +166,18 @@ checkbox_minusc = CTkCheckBox(
     variable=may_checkbox,
     font=("Montserrat", 16, "bold"),
 )
-checkbox_minusc.grid(row=1,column=0, pady=5, sticky="w")
+checkbox_minusc.grid(row=1,column=0, pady=4, sticky="w")
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 num_checkbox = BooleanVar(value=False)
 texto_checkbox = StringVar(value="Incluir números (0-9)")
 checkbox_minusc = CTkCheckBox(
     master=frame_chequesitos,
-    checkbox_width=25,
-    checkbox_height=25,
+    checkbox_width=24,
+    checkbox_height=24,
     fg_color="#90eb66",
     hover_color="#ffffff",
     checkmark_color="#ffffff",
-    corner_radius=5,
+    corner_radius=4,
     border_width=3,
     text="Incluir números (0-9)",
     textvariable = texto_checkbox,
@@ -176,18 +186,18 @@ checkbox_minusc = CTkCheckBox(
     variable=num_checkbox,
     font=("Montserrat", 16, "bold"),
 )
-checkbox_minusc.grid(row=2,column=0,pady=5, sticky="w")
+checkbox_minusc.grid(row=2,column=0,pady=4, sticky="w")
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 simb_checkbox = BooleanVar(value=False)
 texto_checkbox = StringVar(value="Incluir símbolos (!@#...)")
 checkbox_minusc = CTkCheckBox(
     master=frame_chequesitos,
-    checkbox_width=25,
-    checkbox_height=25,
+    checkbox_width=24,
+    checkbox_height=24,
     fg_color="#90eb66",
     hover_color="#ffffff",
     checkmark_color="#ffffff",
-    corner_radius=5,
+    corner_radius=4,
     border_width=3,
     text="Incluir símbolos (!@#...)",
     textvariable = texto_checkbox,
@@ -196,19 +206,19 @@ checkbox_minusc = CTkCheckBox(
     variable=simb_checkbox,
     font=("Montserrat", 16, "bold"),
 )
-checkbox_minusc.grid(row=3,column=0,pady=5, sticky="w")
+checkbox_minusc.grid(row=3,column=0,pady=4, sticky="w")
 
 #TEXTO-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 contra_text = CTkEntry(
     master=frame_principal,
-    width=15,
-    border_color="#c5c5c5",
+    width=14,
+    border_color="#c4c4c4",
     border_width=2,
-    height=5,
+    height=4,
     corner_radius=0,
     font=("Montserrat", 16),
 )
-contra_text.grid(row=3,column=0,sticky="we", padx=15)
+contra_text.grid(row=3,column=0,sticky="we", padx=14)
 
 #BOTONES FINALES-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 frame_inferior=CTkFrame(master=frame_principal,
@@ -222,7 +232,7 @@ frame_inferior.grid_rowconfigure(0,weight=1)
 
 generar_contraseña = CTkButton (master=frame_inferior,
                     width=300,
-                    height=50,
+                    height=40,
                     corner_radius=0,
                     fg_color="#e768c1",
                     hover_color="#da81c6",
@@ -233,14 +243,14 @@ generar_contraseña = CTkButton (master=frame_inferior,
 generar_contraseña.grid( row=0, column=0,)
 boton_copiar = CTkButton (master=frame_inferior,
                     width=300,
-                    height=50,
+                    height=40,
                     corner_radius=0,
                     fg_color="#e768c1",
                     hover_color="#da81c6",
                     text="COPIAR AL PORTA PAPELES",
+                    command= copiar_texto,
                     anchor="center",
                     font=("Montserrat", 16, "bold"))
-boton_copiar.grid( row=1, column=0, sticky="snew", pady=5)
-
+boton_copiar.grid( row=1, column=0, sticky="snew", pady=4)
 
 ventana.mainloop()
