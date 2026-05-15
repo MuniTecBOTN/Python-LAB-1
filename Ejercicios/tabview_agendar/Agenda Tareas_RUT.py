@@ -7,7 +7,7 @@ set_appearance_mode("light")
 #VENTANA
 #=========================================================================================================
 ventana = CTk()
-ventana.title("Agenda de Tareas")
+ventana.title("Sistema de Registro")
 ventana.geometry("820x640")
 ventana.grid_columnconfigure(0, weight=1)
 ventana.grid_rowconfigure(0, weight=1)
@@ -16,10 +16,11 @@ ventana.grid_rowconfigure(0, weight=1)
 #=========================================================================================================
 color_fondo= "#e3e5f3"
 color_azul= "#4c3af5"
-color_azul_2="#5243d6"
+color_azul_2="#301ecf"
 color_verde="#81dc00"
 color_verde_2="#93e5a1"
 color_blanco="#ffffff"
+color_negro="#000000"
 #=========================================================================================================
 #BOTONES
 #=========================================================================================================
@@ -37,16 +38,9 @@ frame_principal= CTkFrame(master=ventana,
                           fg_color=color_fondo,
                           corner_radius=0)
 frame_principal.grid(row=0, column=0, sticky= "nsew", padx=10, pady=10)
-frame_principal.grid_columnconfigure(0, weight=5)
+frame_principal.grid_columnconfigure(0, weight=1)
 frame_principal.grid_columnconfigure(1, weight=15)
 frame_principal.grid_rowconfigure(0, weight=1)
-#=========================================================================================================
-#FRAME IZQUIERDO 
-#=========================================================================================================
-frame_izquierdo= CTkFrame(master=frame_principal,
-                          fg_color=color_azul,
-                          corner_radius=0)
-frame_izquierdo.grid(row=0, column=0, sticky= "nsew")
 
 #=========================================================================================================
 #FRAME DERECHO 
@@ -89,63 +83,64 @@ frame_datos=CTkFrame(master=frame_derecho,
                      corner_radius=0,
                      fg_color=color_fondo)
 frame_datos.grid(row=1,column=0,sticky="nswe")
-frame_datos.grid_columnconfigure(0, weight=1)
-for i in range (3):
-    frame_datos.grid_rowconfigure(0, weight=5)
+frame_datos.grid_columnconfigure([0,1], weight=1)
+for i in range (5):
+    frame_datos.grid_rowconfigure(i, weight=1)
+#=========================================================================================================
+#FRAME IZQUIERDO 
+#=========================================================================================================
+frame_izquierdo= CTkFrame(master=frame_principal,
+                          fg_color=color_azul,
+                          corner_radius=0)
+frame_izquierdo.grid(row=0, column=0, sticky= "nsew")
 
-etiqueta_nombre= CTkLabel(master=frame_datos,
-                          width=120,
-                          height=50,
-                          text="NOMBRE:",
-                          justify="center",
-                          font=("Montserrat", 16, "bold"),
-                          text_color=color_blanco,
-                          fg_color=color_verde
-                          )
-etiqueta_nombre.grid( row=0, 
-                     column=0, 
-                     sticky="e",
-                     padx=0,
-                     pady=10)
-campo_nombre = CTkEntry(
-    master=frame_datos,
-    width=200,
-    height=55,
-    border_color="#e3e5f3",
-    text_color="#2a00ac",
-    corner_radius=0,
-    justify="center",
-    placeholder_text="...",
-    font=("Montserrat", 16),
+#=========================================================================================================
+#BOTONES NAVEGACION
+#=========================================================================================================
+frame_botones=CTkFrame(master=frame_izquierdo,
+                       corner_radius=0,
+                       fg_color="transparent")
+frame_botones.grid(row=1, column=0, pady=90)
+
+frame_botones.grid_columnconfigure(0, weight=1)
+frame_botones.grid_rowconfigure(0, weight=1)
+frame_botones.grid_rowconfigure(1, weight=1)
+
+boton_agendar_tarea= CTkButton(
+    master=frame_botones,
+    width=150,
+    height=60,
+    text="AGENDAR TAREA",
+    anchor="center",
+    font=("Montserrat", 16, "bold"),
+    fg_color=color_azul_2,
+    hover_color=color_verde
 )
-campo_nombre.grid(row=0,column=1, sticky="w", padx=10)
 
-etiqueta_descripcion= CTkLabel(master=frame_datos,
-                          width=120,
-                          height=50,
-                          text="DESCRIPCION:",
-                          font=("Montserrat", 16, "bold"),
-                          text_color=color_blanco,
-                          fg_color=color_verde
-                          )
-etiqueta_descripcion.grid( row=1, 
-                          column=0, 
-                          sticky="ew",
-                          padx=10)
+boton_agendar_tarea.grid(
+    row=0,
+    column=0,
+    pady=10,
+    padx=20,
+)
 
-etiqueta_fecha= CTkLabel(master=frame_datos,
-                          width=120,
-                          height=50,
-                          text="NOMBRE:",
-                          font=("Montserrat", 16, "bold"),
-                          text_color=color_blanco,
-                          fg_color=color_verde
-                          )
-etiqueta_fecha.grid(row=2, 
-                    column=0, 
-                    sticky="w",
-                    padx=10,
-                    pady=20)
+boton_agenda= CTkButton(
+    master=frame_botones,
+    width=150,
+    height=60,
+    text="AGENDA",
+    anchor="center",
+    font=("Montserrat", 16,"bold"),
+    fg_color=color_azul_2,
+    hover_color=color_verde
+)
+
+boton_agenda.grid(
+    row=1,
+    column=0,
+    pady=10,
+    padx=20
+)
 
 
 ventana.mainloop()
