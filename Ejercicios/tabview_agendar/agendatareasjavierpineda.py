@@ -1,5 +1,29 @@
 from customtkinter import *
 
+estilo_etiqueta = {
+    "width":90,
+    "height":30,
+    "fg_color":"#24b400",
+    "text_color":"#ffffff",
+    "font":("Montserrat", 16),
+  
+}
+
+estilo_ctkentry = {
+    "width":200,
+    "height":30,
+    "fg_color":"#f0f8f6",
+    "corner_radius":0,
+    "text_color":"#000000",
+    "font":("Montserrat", 16),
+   
+}
+
+
+
+
+
+
 set_default_color_theme("dark-blue")
 
 ventana = CTk()
@@ -81,8 +105,7 @@ formulario.configure(fg_color="#ffffff")
 
 formulario.grid_columnconfigure(0,weight=1)
 formulario.grid_columnconfigure(1,weight=1)
-formulario.grid_rowconfigure(0,weight=1)
-formulario.grid_rowconfigure(1,weight=1)
+formulario.grid_rowconfigure([0,1,2,3,4,5],weight=1)
 pestañas._segmented_button.grid_forget()
 
 
@@ -121,54 +144,156 @@ boton_registro.grid(
 )
 
 
-etiqueta_1 = CTkLabel(
+etiqueta_nombre = CTkLabel(
     master=formulario,
-    width=100,
-    fg_color="transparent",
-    text="Nombre de la tarea",
-    font=("Montserrat", 16),
+    text="NOMBRE",
+    **estilo_etiqueta
 )
-etiqueta_1.grid(
+etiqueta_nombre.grid(
     row=0,
     column=0,
-    sticky="ewn",
+    sticky="ew",
     pady=20
 )
 
-#   Caja de texto - CTkTextBox
-caja_texto = CTkEntry(
+campo_nombre = CTkEntry(
     master=formulario,
-    width=200,
-    height=20,
-    corner_radius=0,
-    fg_color="#B90A8E",
-    font=("Montserrat", 16),
+    placeholder_text="---",
+    **estilo_ctkentry
+
 )
-caja_texto.grid(
+campo_nombre.grid(
     row=0,
     column=1,
-    sticky="wn",
+    sticky="ew",
     pady=20
 )
 
-descripcion=CTkTextbox(
+campo_descripcion=CTkTextbox(
     master=formulario,
     width=800,
-    height=90,
+    height=300,
     corner_radius=0,
-    fg_color="#DD2222",
+    fg_color="#F0EFEF",
     font=("Montserrat", 16),
 )
-descripcion.grid(
-    row=1,
+campo_descripcion.grid(
+    row=2,
     column=0,
     sticky="nsew",
-    columnspan=2
+    columnspan=2,
+    padx=10,
+    pady=10
     
 )
 
+#   Etiqueta - CTkLabel
+etiqueta_descripcion = CTkLabel(
+    master=formulario,
+    text="DESCRIPCIÓN", 
+    **estilo_etiqueta
+)
+etiqueta_descripcion.grid(
+    row=1,
+    column=0,
+    columnspan=2,
+    sticky="ew"
+)
 
 
+etiqueta_fecha = CTkLabel(
+    master=formulario,
+    text="FECHA",
+    **estilo_etiqueta
+)
+etiqueta_fecha.grid(
+    row=3,
+    column=0,
+    sticky="ew"
+)
+campo_fecha = CTkEntry(
+    master=formulario,
+    placeholder_text="---",
+    **estilo_ctkentry
+
+)
+campo_fecha.grid(
+    row=3,
+    column=1,
+    sticky="ew",
+   
+)
+def agendar ():
+    
+    
+
+    
+
+    nombre = campo_nombre.get()
+    fecha= campo_fecha.get()
+    descripcion=campo_descripcion.get("0.0",END)
+    if not nombre:
+        campo_nombre.configure(border_color="red", border_width=2)
+        return
+    else:
+        campo_nombre.configure(border_color="green", border_width=2)
+    if not fecha:
+        campo_fecha.configure(border_color="red",border_width=2)
+        return
+    
+    else:
+        campo_fecha.configure(border_color="green",border_width=2)
+        
+    if not descripcion:
+        campo_descripcion.configure(border_color="red",border_width=2)
+    else:
+        campo_descripcion.configure(border_color="green",border_width=2)
+    if not fecha.isdigit():
+        campo_fecha.configure(border_color="orange",border_width=2)
+
+        return
+     
+      
+        
+
+
+
+
+def limpiar ():
+    campo_descripcion.delete("0.0",END),
+    campo_fecha.delete("0",END)
+    campo_nombre.delete("0",END)
+    
+boton_agendar = CTkButton(
+    master=formulario,
+    width=80,
+    height=30,
+    corner_radius=0,
+    text="AGENDA",
+    anchor="center",
+    font=("Montserrat", 16),
+    command=agendar
+)
+
+boton_agendar.grid(
+    row=4,
+    column=0,
+)
+boton_limpiar = CTkButton(
+    master=formulario,
+    width=80,
+    height=30,
+    corner_radius=0,
+    text="LIMPIAR",
+    anchor="center",
+    font=("Montserrat", 16),
+    command=limpiar
+)
+
+boton_limpiar.grid(
+    row=4,
+    column=1,
+)
 
 
 ventana.mainloop()
