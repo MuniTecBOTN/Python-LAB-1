@@ -105,6 +105,16 @@ def incrementar_boletos():
     cantidad_boletos.set(cantidad_actual + 1)
 
 
+peliculas = {
+    "El Origen": ["14:00-16:30", "19:00-21:30"],
+    "Matrix": ["15:00-17:30", "20:00-22:30"],
+    "Inception": ["16:00-18:30", "21:00-23:30"],
+    "Interstellar": ["17:00-19:30", "22:00-00:30"],
+    "Michael Jackson: This Is It": ["18:00-20:30", "23:00-01:30"],
+    "Mario Bros.": ["19:00-21:30", "00:00-02:30"],
+    "El Conjuro": ["20:00-22:30", "01:00-03:30"],
+}
+
 # =========================================================
 # CONFIGURACIÓN GLOBAL
 # =========================================================
@@ -319,8 +329,8 @@ boton_decrementar.grid(
     sticky="news",
     padx=1,
 )
-cantidad_boletos = IntVar(value=0)
 
+cantidad_boletos = IntVar(value=0)
 campo_cantidad = CTkEntry(
     master=frame_spinbox,
     state="readonly",
