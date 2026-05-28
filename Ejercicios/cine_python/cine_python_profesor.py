@@ -105,15 +105,15 @@ def incrementar_boletos():
     cantidad_boletos.set(cantidad_actual + 1)
 
 
-def pelicula_seleccionada():
-    nombre_pelicula = pelicula.get()
-    print(f"Película seleccionada: {nombre_pelicula}")
+def pelicula_seleccionada(nombre_pelicula):
+    horarios = peliculas.get(nombre_pelicula, [])
+    campo_horario.configure(values=horarios)
+    campo_horario.set("SELECCIONE UN HORARIO")
 
 
 peliculas = {
     "El Origen": ["14:00-16:30", "19:00-21:30"],
     "Matrix": ["15:00-17:30", "20:00-22:30"],
-    "Inception": ["16:00-18:30", "21:00-23:30"],
     "Interstellar": ["17:00-19:30", "22:00-00:30"],
     "Michael Jackson: This Is It": ["18:00-20:30", "23:00-01:30"],
     "Mario Bros.": ["19:00-21:30", "00:00-02:30"],
@@ -230,14 +230,14 @@ etiqueta_pelicula.grid(
 )
 
 
-listas_peliculas = list(peliculas.keys())
-pelicula = StringVar(value="Seleccione una película")
+lista_peliculas = list(peliculas.keys())
+seleccion_pelicula = StringVar(value="SELECCIONE UNA PELÍCULA")
 
 campo_pelicula = CTkOptionMenu(
     master=frame_central,
-    values=listas_peliculas,
     command=pelicula_seleccionada,
-    variable=pelicula,
+    values=lista_peliculas,
+    variable=seleccion_pelicula,
     **estilo_lista,
 )
 
@@ -258,10 +258,12 @@ etiqueta_horario.grid(
     column=0,
     sticky="ew",
 )
+seleccion_horario = StringVar(value="SELECCIONE UN HORARIO")
 
 campo_horario = CTkOptionMenu(
     master=frame_central,
     **estilo_lista,
+    variable=seleccion_horario,
 )
 
 campo_horario.grid(
