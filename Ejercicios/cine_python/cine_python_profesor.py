@@ -105,6 +105,11 @@ def incrementar_boletos():
     cantidad_boletos.set(cantidad_actual + 1)
 
 
+def pelicula_seleccionada():
+    nombre_pelicula = pelicula.get()
+    print(f"Película seleccionada: {nombre_pelicula}")
+
+
 peliculas = {
     "El Origen": ["14:00-16:30", "19:00-21:30"],
     "Matrix": ["15:00-17:30", "20:00-22:30"],
@@ -224,8 +229,15 @@ etiqueta_pelicula.grid(
     sticky="ew",
 )
 
+
+listas_peliculas = list(peliculas.keys())
+pelicula = StringVar(value="Seleccione una película")
+
 campo_pelicula = CTkOptionMenu(
     master=frame_central,
+    values=listas_peliculas,
+    command=pelicula_seleccionada,
+    variable=pelicula,
     **estilo_lista,
 )
 
