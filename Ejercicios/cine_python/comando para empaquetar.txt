@@ -1,1 +1,1 @@
-python -m PyInstaller --noconfirm --onedir --windowed "c:/Users/CC2Z03/Desktop/ejercicio_cine_Javier_pineda.py"
+python -m PyInstaller --noconfirm --onedir --windowed "ruta_del_archivo .py"
