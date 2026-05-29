@@ -7,7 +7,7 @@ COLOR_FONDO = "#f0f2f5"
 COLOR_AZUL = "#0053a1"
 COLOR_AMARILLO = "#fdb827"
 COLOR_BLANCO = "#ffffff"
-COLOR_ROJO = "#ea4f4f"
+COLOR_ROJO = "#ee4c4c"
 COLOR_VERDE = "#2ce429"
 TRANSPARENTE = "transparent"
 ALTURA_ESTANDAR_CAMPO = 35
@@ -94,25 +94,34 @@ estilo_boton_segmentado = {
 }
 
 
+def calcular_total():
+    total = cantidad_boletos.get() * precio_boleto.get()
+    total_en_boletos.set(total)
+
+
 def decrementar_boletos():
     cantidad_actual = cantidad_boletos.get()
     if cantidad_actual > 0:
         cantidad_boletos.set(cantidad_actual - 1)
+    calcular_total()
 
 
 def incrementar_boletos():
     cantidad_actual = cantidad_boletos.get()
     cantidad_boletos.set(cantidad_actual + 1)
+    calcular_total()
 
 
 def pelicula_seleccionada(nombre_pelicula):
     horarios = peliculas.get(nombre_pelicula, [])
     campo_horario.configure(values=horarios)
     campo_horario.set("SELECCIONE UN HORARIO")
+    calcular_total()
 
 
 def calcular_precio_unitario(tipo_boleto):
     precio_boleto.set(boleto_precio.get(tipo_boleto, 0))
+    calcular_total()
 
 
 def click_boton_limpiar():
@@ -120,8 +129,46 @@ def click_boton_limpiar():
     campo_pelicula.set(value="SELECCIONE UNA PELÍCULA")
     opcion_seleccionada_menu_horario.set("SELECCIONE UN HORARIO")
     opcion_seleccionada_menu_pelicula.set("SELECCIONE UNA PELÍCULA")
-    campo_tipo.set("NORMAL")
-    precio_boleto.set(boleto_precio.get("NORMAL", 0))
+    campo_tipo.set(None)
+    cantidad_boletos.set(0)
+    precio_boleto.set(0)
+    total_en_boletos.set(0)
+
+
+def marcar_error(widget, color_fondo=COLOR_BLANCO, color_texto=COLOR_AZUL):
+
+    widget.configure(fg_color=COLOR_ROJO, text_color=COLOR_BLANCO)
+
+    ventana.after(
+        800, lambda: widget.configure(fg_color=color_fondo, text_color=color_texto)
+    )
+
+
+def validar_campos():
+
+    valido = True
+
+    # Validar película
+    if opcion_seleccionada_menu_pelicula.get() == "SELECCIONE UNA PELÍCULA":
+        marcar_error(campo_pelicula)
+        valido = False
+
+    # Validar horario
+    if opcion_seleccionada_menu_horario.get() == "SELECCIONE UN HORARIO":
+        marcar_error(campo_horario)
+        valido = False
+
+    # Validar tipo de boleto
+    if campo_tipo.get() not in boleto_precio:
+        marcar_error(campo_tipo, color_texto=COLOR_BLANCO)
+        valido = False
+
+    # Validar cantidad
+    if cantidad_boletos.get() <= 0:
+        marcar_error(campo_cantidad)
+        valido = False
+
+    return valido
 
 
 peliculas = {
@@ -442,10 +489,11 @@ etiqueta_total.grid(
     column=0,
     sticky="ew",
 )
-
+total_en_boletos = IntVar(value=0)
 campo_total = CTkEntry(
     master=frame_central,
     state="readonly",
+    textvariable=total_en_boletos,
     **estilo_campo,
 )
 campo_total.grid(
@@ -460,6 +508,7 @@ campo_total.grid(
 boton_calcular = CTkButton(
     master=frame_inferior,
     text="CALCULAR",
+    command=validar_campos,
     **estilo_boton,
 )
 boton_calcular.grid(
