@@ -23,11 +23,13 @@ color_amarillo_2="#F0DA78"
 color_blanco="#FFFFFF"
 color_negro="#000000"
 transparente="transparent"
+
+#==========================================================================================
+#ESTILOS 
+#==========================================================================================
 altura_estandar_campo=55
 tamaño_letra_normal=16
 estilo_letra=("Montserrat", tamaño_letra_normal, "bold")
-#==========================================================================================
-#ATAJOS 
 #==========================================================================================
 estilo_botones={
     "width":120,
@@ -61,29 +63,52 @@ def decrementar_boletos():
     cantidad_actual = cantidad_boletos.get()
     if cantidad_actual>0:
         cantidad_boletos.set(cantidad_actual-1)
+    calcular_total()
         
 def incrementar_boletos():
     cantidad_actual = cantidad_boletos.get()
     cantidad_boletos.set(cantidad_actual+1)
+    calcular_total()
     
-def pelicula_seleccionada(valor):
-    nombre_pelicula=pelicula.get()
-    #print(f "Pelicula Seleccionada":{nombre_pelicula}")
-    menu_peliculas.configure(values=peliculas[valor])
+def pelicula_seleccionada(nombre_pelicula):
+    horarios=peliculas.get(nombre_pelicula,[])
+    menu_horarios.configure(values=horarios)
+    menu_horarios.set("Seleccione un horario")
+    calcular_total()
+    
        
 def limpiar():
     cantidad_boletos.set(0)
-    pelicula.set("Seleccione una pelicula")
+    menu_seleccion_pelicula.set("Seleccione una pelicula")
     horario_seleccionado.set("Seleccione un horario")
-    boleto_seleccionado.set(None)
-    
+    botones_agrupados_boleto.set(None)
+    precio_boleto.set(0)
+    total_boletos.set(0)
 
 peliculas={"Super Mario Galaxy":["14:15-16:00", "16:45-17:30", "19:00-20:15"],
            "El diablo viste a la moda 2": ["13:00-14:55", "15:30-17:00", "18:15-19:30", "21:00-22:10"],
-           "Michel": ["14:00-15:20", "17:15-18:15", "20:30-22:00"],
+           "Michel: This Is It": ["14:00-15:20", "17:15-18:15", "20:30-22:00"],
            "En la Zona Gris": ["16:00-17:45", "19:30-20:45", "20:45-22:00"],
-           "BTS World Tour ARIRANG In Busan: Live": ["1:00-4:30", "15:00-18:30"]
+           "BTS World Tour ARIRANG In Busan: Live": ["1:00-4:30", "15:00-18:30"],
+           "Backrooms": ["18:00-19:40", "20:00-21:40", "22:00-23:40"],
+           "Billie Eilish: Hit Me Hard and Soft 3D": ["14:00-16:00", "18:30-20:30"],
+           "Deep Water": ["16:00-18:00", "19:00-21:00", "21:30-23:30"],
 }
+
+boleto_precio={
+    "NIÑO":35,
+    "NORMAL":45,
+    "VIP":90
+}
+
+def calcular_precio_unitario(tipo_boleto):
+    precio_boleto.set(boleto_precio.get(tipo_boleto,0))
+    calcular_total()
+    
+def calcular_total():
+    precio=precio_boleto.get()
+    cantidad=cantidad_boletos.get()
+    total_boletos.set(precio*cantidad)
     
 #==========================================================================================
 # FRAME PRINCIPAL
@@ -197,7 +222,7 @@ etiqueta_total.grid(row=5,
 # DATOS
 #==========================================================================================
 lista_peliculas=list(peliculas.keys())
-pelicula= StringVar(value="Seleccione una pelicula")
+menu_seleccion_pelicula= StringVar(value="Seleccione una pelicula")
 menu_peliculas=CTkOptionMenu(master=frame_opciones,
                              corner_radius=0,
                              fg_color=color_blanco,
@@ -205,9 +230,9 @@ menu_peliculas=CTkOptionMenu(master=frame_opciones,
                              height=altura_estandar_campo,
                              dynamic_resizing=False,
                              values=lista_peliculas,
-                             variable=pelicula,
-                             command=pelicula_seleccionada,
+                             variable=menu_seleccion_pelicula,
                              anchor="center",
+                             command=pelicula_seleccionada,
                              text_color=color_azul,
                              button_color=color_amarillo,
                              button_hover_color=color_amarillo_2,
@@ -228,6 +253,7 @@ menu_horarios=CTkOptionMenu(master=frame_opciones,
                              width=250,
                              height=altura_estandar_campo,
                              dynamic_resizing=False,
+                             values=["Seleccione un horario"],
                              variable=horario_seleccionado,
                              text_color=color_azul,
                              anchor="center",
@@ -244,14 +270,13 @@ menu_horarios.grid(row=1,
                    sticky="wen", 
                    pady=5)
 
-boleto_seleccionado = StringVar(value=None)
+tipos_de_boletos=list(boleto_precio.keys())
 
-botones_agrupados = CTkSegmentedButton(
+botones_agrupados_boleto = CTkSegmentedButton(
     master=frame_opciones,
     width=250,
     height=altura_estandar_campo,
-    values=["NIÑO", "VIP", "NORMAL"],
-    variable=boleto_seleccionado,
+    values=tipos_de_boletos,
     font=("Montserrat", 16,"bold"),
     fg_color=color_azul,
     unselected_color=color_azul,
@@ -259,10 +284,11 @@ botones_agrupados = CTkSegmentedButton(
     selected_hover_color=color_amarillo,
     selected_color=color_amarillo, 
     text_color=color_blanco,
-    corner_radius=0
+    corner_radius=0,
+    command=calcular_precio_unitario
 )
 
-botones_agrupados.grid(
+botones_agrupados_boleto.grid(
     row=2,
     column=1,
     sticky="wen",
@@ -272,17 +298,26 @@ botones_agrupados.grid(
 #==========================================================================================
 #CAMPOS TEXTO
 #==========================================================================================
-campo_precio=CTkEntry(master=frame_opciones,
-                         **estilo_campo_texto,
-                         state="readonly")
+
+precio_boleto=IntVar(value=0)
+campo_precio=CTkEntry(
+    master=frame_opciones,
+    **estilo_campo_texto,
+    state="readonly",
+    textvariable=precio_boleto
+    )
+
 campo_precio.grid(row=4,
                   column=1,
                   sticky="ewn",
                   pady=5
                   )
+
+total_boletos=IntVar(value=0)
 campo_total=CTkEntry(master=frame_opciones,
                          **estilo_campo_texto,
-                         state="readonly")
+                         state="readonly",
+                         textvariable=total_boletos)
 campo_total.grid(row=5,
                   column=1,
                   sticky="enw",
@@ -331,7 +366,6 @@ campo_cantidad= CTkEntry(master=frame_cantidad,
                          state="readonly",
                          textvariable=cantidad_boletos)
 campo_cantidad.grid(row=0, column=1, sticky="nwe",pady=5)
-
 
 #==========================================================================================
 #BOTONES FINALES
