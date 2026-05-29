@@ -111,13 +111,32 @@ def pelicula_seleccionada(nombre_pelicula):
     campo_horario.set("SELECCIONE UN HORARIO")
 
 
+def calcular_precio_unitario(tipo_boleto):
+    precio_boleto.set(boleto_precio.get(tipo_boleto, 0))
+
+
+def click_boton_limpiar():
+    campo_horario.configure(values=["SELECCIONE UN HORARIO"])
+    campo_pelicula.set(value="SELECCIONE UNA PELÍCULA")
+    opcion_seleccionada_menu_horario.set("SELECCIONE UN HORARIO")
+    opcion_seleccionada_menu_pelicula.set("SELECCIONE UNA PELÍCULA")
+    campo_tipo.set("NORMAL")
+    precio_boleto.set(boleto_precio.get("NORMAL", 0))
+
+
 peliculas = {
-    "El Origen": ["14:00-16:30", "19:00-21:30"],
-    "Matrix": ["15:00-17:30", "20:00-22:30"],
-    "Interstellar": ["17:00-19:30", "22:00-00:30"],
-    "Michael Jackson: This Is It": ["18:00-20:30", "23:00-01:30"],
-    "Mario Bros.": ["19:00-21:30", "00:00-02:30"],
-    "El Conjuro": ["20:00-22:30", "01:00-03:30"],
+    "El Origen": ["13:30-16:00", "17:30-20:00", "21:30-00:00"],
+    "Matrix": ["14:00-16:30", "18:00-20:30", "21:30-00:00"],
+    "Interstellar": ["15:00-17:30", "18:30-21:00", "22:00-00:30"],
+    "Michael Jackson: This Is It": ["14:30-17:00", "18:00-20:30", "21:30-00:00"],
+    "Mario Bros.": ["13:00-15:30", "16:30-19:00", "20:00-22:30"],
+    "El Conjuro": ["15:00-17:30", "18:00-20:30", "21:00-23:30"],
+}
+
+boleto_precio = {
+    "NIÑO": 35,
+    "NORMAL": 45,
+    "VIP": 90,
 }
 
 # =========================================================
@@ -231,22 +250,22 @@ etiqueta_pelicula.grid(
 
 
 lista_peliculas = list(peliculas.keys())
-seleccion_pelicula = StringVar(value="SELECCIONE UNA PELÍCULA")
+opcion_seleccionada_menu_pelicula = StringVar(value="SELECCIONE UNA PELÍCULA")
 
 campo_pelicula = CTkOptionMenu(
     master=frame_central,
     command=pelicula_seleccionada,
     values=lista_peliculas,
-    variable=seleccion_pelicula,
+    variable=opcion_seleccionada_menu_pelicula,
     **estilo_lista,
 )
+
 
 campo_pelicula.grid(
     row=0,
     column=1,
     sticky="ew",
 )
-
 etiqueta_horario = CTkLabel(
     master=frame_central,
     text="HORARIO: ",
@@ -258,13 +277,17 @@ etiqueta_horario.grid(
     column=0,
     sticky="ew",
 )
-seleccion_horario = StringVar(value="SELECCIONE UN HORARIO")
+
+
+opcion_seleccionada_menu_horario = StringVar(value="SELECCIONE UN HORARIO")
 
 campo_horario = CTkOptionMenu(
     master=frame_central,
+    values=["SELECCIONE UN HORARIO"],
+    variable=opcion_seleccionada_menu_horario,
     **estilo_lista,
-    variable=seleccion_horario,
 )
+
 
 campo_horario.grid(
     row=1,
@@ -284,17 +307,23 @@ etiqueta_tipo.grid(
     sticky="ew",
 )
 
+
+tipos_de_boletos = list(boleto_precio.keys())
+
 campo_tipo = CTkSegmentedButton(
     master=frame_central,
-    values=["NIÑO", "NORMAL", "VIP"],
+    values=tipos_de_boletos,
+    command=calcular_precio_unitario,
     **estilo_boton_segmentado,
 )
 campo_tipo.set("NORMAL")
+
 campo_tipo.grid(
     row=2,
     column=1,
     sticky="ew",
 )
+
 
 ventana.after(
     100,
@@ -387,10 +416,13 @@ etiqueta_precio.grid(
     column=0,
     sticky="ew",
 )
+precio_boleto = IntVar(value=0)
+precio_boleto.set(boleto_precio.get("NORMAL", 0))
 
 campo_precio = CTkEntry(
     master=frame_central,
     state="readonly",
+    textvariable=precio_boleto,
     **estilo_campo,
 )
 campo_precio.grid(
@@ -438,6 +470,7 @@ boton_calcular.grid(
 boton_limpiar = CTkButton(
     master=frame_inferior,
     text="LIMPIAR",
+    command=click_boton_limpiar,
     **estilo_boton,
 )
 boton_limpiar.grid(
