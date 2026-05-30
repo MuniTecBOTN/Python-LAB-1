@@ -10,7 +10,7 @@ COLOR_BLANCO = "#ffffff"
 COLOR_ROJO = "#ee4c4c"
 COLOR_VERDE = "#2ce429"
 TRANSPARENTE = "transparent"
-ALTURA_ESTANDAR_CAMPO = 35
+ALTURA_ESTANDAR_CAMPO = 12
 TAMAÑO_LETRA_NORMAL = 18
 
 # =========================================================
