@@ -8,7 +8,7 @@ set_appearance_mode("light")
 #==========================================================================================
 ventana = CTk()
 ventana.title("CINE")
-ventana.geometry("520x700")
+ventana.geometry("720x600")
 ventana.grid_columnconfigure(0, weight=1)
 ventana.grid_rowconfigure(0, weight=1)
 
@@ -22,33 +22,94 @@ color_amarillo="#FFCF03"
 color_amarillo_2="#F0DA78"
 color_blanco="#FFFFFF"
 color_negro="#000000"
+transparente="transparent"
+
 #==========================================================================================
-#ATAJOS 
+#ESTILOS 
+#==========================================================================================
+altura_estandar_campo=55
+tamaño_letra_normal=16
+estilo_letra=("Montserrat", tamaño_letra_normal, "bold")
 #==========================================================================================
 estilo_botones={
-    "width":150,
-    "height":60,
+    "width":120,
+    "height":altura_estandar_campo,
     "fg_color":color_azul,
     "hover_color": color_azul_2,
     "text_color":color_blanco,
     "font":("Monteserrat", 16, "bold")}
 
 estilo_etiquetas={"width":150, 
-                  "height":40,
+                  "height":altura_estandar_campo,
                   "justify":"center",
+                  "corner_radius":0,
                   "text_color":color_blanco,
                   }
 
-estilo_campo_texto={"width":250,
-                    "height":40,
+estilo_campo_texto={"width":150,
+                    "height":altura_estandar_campo,
                     "border_color":color_blanco,
                     "fg_color":color_blanco,
                     "text_color":color_negro,
                     "corner_radius":0,
                     "justify":"center",
-                    "placeholder_text":"...",
-                    "font":("Montserrat", 16)}
+                    "placeholder_text":"",
+                    "font":("Montserrat", 16, "bold"),}
 
+#==========================================================================================
+# DEFINICIONES
+#==========================================================================================
+def decrementar_boletos():
+    cantidad_actual = cantidad_boletos.get()
+    if cantidad_actual>0:
+        cantidad_boletos.set(cantidad_actual-1)
+    calcular_total()
+        
+def incrementar_boletos():
+    cantidad_actual = cantidad_boletos.get()
+    cantidad_boletos.set(cantidad_actual+1)
+    calcular_total()
+    
+def pelicula_seleccionada(nombre_pelicula):
+    horarios=peliculas.get(nombre_pelicula,[])
+    menu_horarios.configure(values=horarios)
+    menu_horarios.set("Seleccione un horario")
+    calcular_total()
+    
+       
+def limpiar():
+    cantidad_boletos.set(0)
+    menu_seleccion_pelicula.set("Seleccione una pelicula")
+    horario_seleccionado.set("Seleccione un horario")
+    botones_agrupados_boleto.set(None)
+    precio_boleto.set(0)
+    total_boletos.set(0)
+
+peliculas={"Super Mario Galaxy":["14:15-16:00", "16:45-17:30", "19:00-20:15"],
+           "El diablo viste a la moda 2": ["13:00-14:55", "15:30-17:00", "18:15-19:30", "21:00-22:10"],
+           "Michel: This Is It": ["14:00-15:20", "17:15-18:15", "20:30-22:00"],
+           "En la Zona Gris": ["16:00-17:45", "19:30-20:45", "20:45-22:00"],
+           "BTS World Tour ARIRANG In Busan: Live": ["1:00-4:30", "15:00-18:30"],
+           "Backrooms": ["18:00-19:40", "20:00-21:40", "22:00-23:40"],
+           "Billie Eilish: Hit Me Hard and Soft 3D": ["14:00-16:00", "18:30-20:30"],
+           "Deep Water": ["16:00-18:00", "19:00-21:00", "21:30-23:30"],
+}
+
+boleto_precio={
+    "NIÑO":35,
+    "NORMAL":45,
+    "VIP":90
+}
+
+def calcular_precio_unitario(tipo_boleto):
+    precio_boleto.set(boleto_precio.get(tipo_boleto,0))
+    calcular_total()
+    
+def calcular_total():
+    precio=precio_boleto.get()
+    cantidad=cantidad_boletos.get()
+    total_boletos.set(precio*cantidad)
+    
 #==========================================================================================
 # FRAME PRINCIPAL
 #==========================================================================================
@@ -76,7 +137,7 @@ frame_titulo.grid_rowconfigure(0, weight=1)
 etiqueta_titulo=CTkLabel(master=frame_titulo,
                          **estilo_etiquetas,
                          fg_color=color_azul,
-                         text="CINE PYTHON",
+                         text="🎬 CINE PYTHON",
                          font=("Montserrat",20, "bold"),)
 etiqueta_titulo.grid(row=0, column=0)
 
@@ -89,10 +150,11 @@ frame_opciones=CTkFrame(master=frame_principal,
                         fg_color=color_fondo)
 frame_opciones.grid(row=1, 
                     column=0, 
-                    sticky="nsew",
-                    pady=20)
+                    sticky="nsew", 
+                    padx=10,
+                    pady=5)
 frame_opciones.grid_columnconfigure([0,1], weight=1)
-for i in range(5):
+for i in range(6):
     frame_opciones.grid_rowconfigure(i, weight=1)
 
 #==========================================================================================
@@ -101,69 +163,76 @@ for i in range(5):
 etiqueta_pelicula=CTkLabel(master=frame_opciones,
                            **estilo_etiquetas,
                            text="PELÍCULA",
-                           fg_color=color_amarillo)
+                           fg_color=color_amarillo,
+                           font=estilo_letra)
 etiqueta_pelicula.grid(row=0, 
                        column=0,
-                       sticky="e")
+                       sticky="we")
 
 etiqueta_horario=CTkLabel(master=frame_opciones,
                            **estilo_etiquetas,
                            text="HORARIO",
-                           fg_color=color_amarillo)
+                           fg_color=color_amarillo,
+                           font=estilo_letra)
 etiqueta_horario.grid(row=1, 
                       column=0, 
-                      sticky="ne", 
+                      sticky="nwe", 
                       pady=5)
 
 etiqueta_tipo=CTkLabel(master=frame_opciones,
                            **estilo_etiquetas,
                            text="TIPO BOLETO",
-                           fg_color=color_amarillo)
+                           fg_color=color_amarillo,
+                           font=estilo_letra)
 etiqueta_tipo.grid(row=2, 
                    column=0, 
-                   sticky="ne", 
+                   sticky="nwe", 
                    pady=5)
 
 etiqueta_cantidad=CTkLabel(master=frame_opciones,
                            **estilo_etiquetas,
                            text="CANTIDAD",
-                           fg_color=color_amarillo)
+                           fg_color=color_amarillo,
+                           font=estilo_letra)
 etiqueta_cantidad.grid(row=3, 
                        column=0, 
-                       sticky="ne", 
+                       sticky="nwe", 
                        pady=5)
 
 etiqueta_precio=CTkLabel(master=frame_opciones,
                            **estilo_etiquetas,
                            text="PRECIO UNITARIO",
-                           fg_color=color_amarillo)
+                           fg_color=color_amarillo,
+                           font=estilo_letra)
 etiqueta_precio.grid(row=4, 
                      column=0, 
-                     sticky="ne", 
+                     sticky="nwe", 
                      pady=5)
 
 etiqueta_total=CTkLabel(master=frame_opciones,
                            **estilo_etiquetas,
                            text="TOTAL",
-                           fg_color=color_amarillo)
+                           fg_color=color_amarillo,
+                           font=estilo_letra)
 etiqueta_total.grid(row=5, 
-                    column=0,sticky="ne", 
+                    column=0,sticky="nwe", 
                     pady=5)
 
 #==========================================================================================
 # DATOS
 #==========================================================================================
-lista_peliculas=["Super Mario Galaxy", "El diablo viste a la moda 2", "Michel", "En la Zona Gris", "TXT in Japan:Live Viewing"]
-pelicula_seleccionada= StringVar(value="Seleccione una pelicula")
+lista_peliculas=list(peliculas.keys())
+menu_seleccion_pelicula= StringVar(value="Seleccione una pelicula")
 menu_peliculas=CTkOptionMenu(master=frame_opciones,
                              corner_radius=0,
                              fg_color=color_blanco,
                              width=250,
-                             height=40,
+                             height=altura_estandar_campo,
                              dynamic_resizing=False,
                              values=lista_peliculas,
-                             variable=pelicula_seleccionada,
+                             variable=menu_seleccion_pelicula,
                              anchor="center",
+                             command=pelicula_seleccionada,
                              text_color=color_azul,
                              button_color=color_amarillo,
                              button_hover_color=color_amarillo_2,
@@ -175,17 +244,16 @@ menu_peliculas=CTkOptionMenu(master=frame_opciones,
                              )
 menu_peliculas.grid(row=0,
                     column=1,
-                    sticky="w")
+                    sticky="ew")
 
-lista_horarios=["8:00","12:00","13:30","15:00","16:30","17:00","18:30"]
 horario_seleccionado= StringVar(value="Seleccione un horario")
 menu_horarios=CTkOptionMenu(master=frame_opciones,
                              corner_radius=0,
                              fg_color=color_blanco,
                              width=250,
-                             height=40,
+                             height=altura_estandar_campo,
                              dynamic_resizing=False,
-                             values=lista_horarios,
+                             values=["Seleccione un horario"],
                              variable=horario_seleccionado,
                              text_color=color_azul,
                              anchor="center",
@@ -199,58 +267,126 @@ menu_horarios=CTkOptionMenu(master=frame_opciones,
                              )
 menu_horarios.grid(row=1,
                    column=1,
-                   sticky="wn", 
+                   sticky="wen", 
                    pady=5)
 
-boleto_seleccionado = StringVar(value=None)
+tipos_de_boletos=list(boleto_precio.keys())
 
-botones_agrupados = CTkSegmentedButton(
+botones_agrupados_boleto = CTkSegmentedButton(
     master=frame_opciones,
     width=250,
-    height=40,
-    values=["NIÑO", "VIP", "NORMAL"],
-    variable=boleto_seleccionado,
+    height=altura_estandar_campo,
+    values=tipos_de_boletos,
     font=("Montserrat", 16,"bold"),
     fg_color=color_azul,
     unselected_color=color_azul,
     unselected_hover_color=color_azul,
     selected_hover_color=color_amarillo,
     selected_color=color_amarillo, 
-    text_color=color_blanco
+    text_color=color_blanco,
+    corner_radius=0,
+    command=calcular_precio_unitario
 )
 
-botones_agrupados.grid(
+botones_agrupados_boleto.grid(
     row=2,
     column=1,
-    sticky="wn",
+    sticky="wen",
     pady=5
 )
 
+#==========================================================================================
+#CAMPOS TEXTO
+#==========================================================================================
 
+precio_boleto=IntVar(value=0)
+campo_precio=CTkEntry(
+    master=frame_opciones,
+    **estilo_campo_texto,
+    state="readonly",
+    textvariable=precio_boleto
+    )
 
+campo_precio.grid(row=4,
+                  column=1,
+                  sticky="ewn",
+                  pady=5
+                  )
+
+total_boletos=IntVar(value=0)
+campo_total=CTkEntry(master=frame_opciones,
+                         **estilo_campo_texto,
+                         state="readonly",
+                         textvariable=total_boletos)
+campo_total.grid(row=5,
+                  column=1,
+                  sticky="enw",
+                  pady=5
+                  )
 
 #==========================================================================================
-# FRAME BOTONES
+# FRAME CANTIDAD
 #==========================================================================================
-frame_botones=CTkFrame(master=frame_principal,
-                       corner_radius=0,
-                       fg_color=color_fondo)
-frame_botones.grid(row=2, column=0)
-frame_botones.grid_columnconfigure([0,1], weight=1)
-frame_botones.grid_rowconfigure(0,weight=1)
+frame_cantidad=CTkFrame(master=frame_opciones,
+                        corner_radius=0,
+                        fg_color=transparente)
+frame_cantidad.grid(row=3, column=1, sticky="enw")
+frame_cantidad.grid_rowconfigure(0, weight=1)
+frame_cantidad.grid_columnconfigure(0, weight=1)
+frame_cantidad.grid_columnconfigure(1, weight=1)
+frame_cantidad.grid_columnconfigure(2, weight=1)
 
-boton_facturar=CTkButton(master=frame_botones,
-                         **estilo_botones,
-                         text="FACTURAR")
-boton_facturar.grid(row=0, column=0,sticky="w", padx=10)
+boton_decrementar=CTkButton(master=frame_cantidad,
+                      corner_radius=0,
+                      fg_color=color_azul,
+                      height=altura_estandar_campo,
+                      width=120,
+                      text="-",
+                      hover_color= color_azul_2,
+                      text_color=color_blanco,
+                      command=decrementar_boletos,
+                      font=("Monteserrat", 16, "bold"))
+boton_decrementar.grid(row=0, column=0, sticky="nwe", pady=5)
+boton_incrementar=CTkButton(master=frame_cantidad,
+                      corner_radius=0,
+                      fg_color=color_azul,
+                      height=altura_estandar_campo,
+                      width=120,
+                      text="+",
+                      command=incrementar_boletos,
+                      hover_color= color_azul_2,
+                      text_color=color_blanco,
+                      font=("Monteserrat", 16, "bold"),
+                    )
+boton_incrementar.grid(row=0, column=2,sticky="nwe", pady=5)
 
-boton_limpiar=CTkButton(master=frame_botones,
+cantidad_boletos=IntVar(value=0)
+campo_cantidad= CTkEntry(master=frame_cantidad,
+                         **estilo_campo_texto,
+                         state="readonly",
+                         textvariable=cantidad_boletos)
+campo_cantidad.grid(row=0, column=1, sticky="nwe",pady=5)
+
+#==========================================================================================
+#BOTONES FINALES
+#==========================================================================================
+boton_facturar=CTkButton(master=frame_opciones,
                          **estilo_botones,
-                         text="LIMPIAR")
-boton_limpiar.grid(row=0, column=1,sticky="e", padx=10)
+                         text="FACTURAR", 
+                         corner_radius=0)
+boton_facturar.grid(row=6, column=0,sticky="wse")
+
+boton_limpiar=CTkButton(master=frame_opciones,
+                         **estilo_botones,
+                         text="LIMPIAR", 
+                         corner_radius=0,
+                         command=limpiar)
+boton_limpiar.grid(row=6, column=1,sticky="esw",)
 
 #==========================================================================================
 # 
 #==========================================================================================
+
+
 
 ventana.mainloop()
