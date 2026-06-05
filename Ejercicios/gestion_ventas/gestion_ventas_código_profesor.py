@@ -1,5 +1,21 @@
 from customtkinter import *
 
+def decrementar_boletos():
+    cantidad_actual = cantidad_boletos.get()
+    if cantidad_actual > 0:
+        cantidad_boletos.set(cantidad_actual - 1)
+    
+
+def incrementar_boletos():
+    cantidad_actual = cantidad_boletos.get()
+    cantidad_boletos.set(cantidad_actual + 1)
+    
+productos = {
+    "Xiaomi Redmi 15 C": {"precio": 15000, "stock": 100},
+    "Samsung Galaxy S25 ULTRA": {"precio": 20000, "stock": 50},
+    "Apple iPhone 15 Pro Max": {"precio": 15000, "stock": 75},
+}
+    
 # =========================================================
 # COLORES
 # =========================================================
@@ -392,17 +408,160 @@ pestañas._segmented_button.grid_forget()
 # =========================================================
 tab_ventas.configure(fg_color=COLOR_BLANCO)
 tab_ventas.grid_columnconfigure(0,weight=1)
-tab_ventas.grid_rowconfigure(0,weight=1)
+tab_ventas.grid_rowconfigure([0,1],weight=1)
+
+frame_producto = CTkFrame(
+    master=tab_ventas,
+    fg_color=COLOR_FONDO,
+    corner_radius=0
+)
+
+frame_producto.grid(
+    row=0,
+    column=0,
+    sticky="nsew",
+    padx=20,
+    pady=20
+)
+
+frame_producto.grid_columnconfigure(0,weight=2)
+frame_producto.grid_columnconfigure(1,weight=4)
+frame_producto.grid_columnconfigure(2,weight=1)
+frame_producto.grid_rowconfigure([0,1],weight=1)
+
+etiqueta_producto = CTkLabel(
+    master=frame_producto,
+    text="ITEM:",
+    **estilo_etiqueta_normal,
+)
+
+etiqueta_producto.grid(
+    row=0,
+    column=0,
+    sticky="ew",
+    padx=10,
+    pady=10
+)   
+
+lista_productos = list(productos.keys())
+opcion_seleccionada_menu_producto = StringVar(value="SELECCIONE UN PRODUCTO")
+
+campo_producto = CTkOptionMenu(
+    master=frame_producto,
+    #command=producto_seleccionado,
+    values=lista_productos,
+    variable=opcion_seleccionada_menu_producto,
+    **estilo_lista,
+)
+campo_producto.grid(
+    row=0,
+    column=1,
+    sticky="ew",
+    padx=10,
+    pady=10,
+    columnspan=2
+)
+
+etiqueta_cantidad = CTkLabel(
+    master=frame_producto,
+    text="CANTIDAD:",
+    **estilo_etiqueta_normal,
+)
+etiqueta_cantidad.grid( 
+    row=1,
+    column=0,
+    sticky="ew",
+    padx=10,
+    pady=10
+)
+
+# =========================================================
+# SPINBOX
+# =========================================================
+frame_spinbox = CTkFrame(
+    master=frame_producto,
+    height=ALTURA_ESTANDAR_CAMPO,
+    fg_color=TRANSPARENTE,
+    corner_radius=0,
+)
+frame_spinbox.grid(
+    row=1,
+    column=1,
+    sticky="ew",
+    padx=10,
+    pady=10,
+    columnspan=2,
+)
+frame_spinbox.grid_columnconfigure([0, 1, 2], weight=1)
+frame_spinbox.grid_rowconfigure(0, weight=1)
+
+boton_decrementar = CTkButton(
+    master=frame_spinbox,
+    command=decrementar_boletos,
+    text="-",
+    **estilo_boton_spinbox,
+)
+boton_decrementar.grid(
+    row=0,
+    column=0,
+    sticky="news",
+    padx=1,
+)
+
+cantidad_boletos = IntVar(value=0)
+campo_cantidad = CTkEntry(
+    master=frame_spinbox,
+    state="readonly",
+    height=ALTURA_ESTANDAR_CAMPO,
+    fg_color=COLOR_BLANCO,
+    border_color=COLOR_BLANCO,
+    text_color=COLOR_AZUL,
+    justify="center",
+    corner_radius=0,
+    textvariable=cantidad_boletos,
+    font=("Montserrat", TAMAÑO_LETRA_NORMAL),
+)
+campo_cantidad.grid(
+    row=0,
+    column=1,
+    sticky="news",
+    padx=1,
+)
+boton_incrementar = CTkButton(
+    master=frame_spinbox,
+    command=incrementar_boletos,
+    text="+",
+    **estilo_boton_spinbox,
+)
+boton_incrementar.grid(
+    row=0,
+    column=2,
+    sticky="news",
+    padx=1,
+)
+
+boton_agregar = CTkButton(
+    master=frame_producto,
+    text="AGREGAR",
+    **estilo_boton,
+) 
+boton_agregar.grid(
+    row=2,
+    column=2,
+    sticky="ew",
+    padx=10,
+    pady=10
+)   
 
 frame_escroleable = CTkScrollableFrame(
     master=tab_ventas,
-    fg_color=COLOR_AMARILLO,
+    fg_color=COLOR_FONDO,
     corner_radius=0,
     scrollbar_button_color=COLOR_AZUL,
     scrollbar_button_hover_color=COLOR_AZUL,
 )   
 frame_escroleable.grid(
-    row=0,
+    row=1,
     column=0,
     sticky="nsew",
     padx=20,
