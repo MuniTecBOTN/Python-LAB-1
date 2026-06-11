@@ -1,0 +1,8 @@
+id,codigo,nombre,precio,categoria
+0,A001,Laptop,1200.00,Dispositivos Electrónicos
+1,A002,Smartphone,100.00,Dispositivos Electrónicos
+2,A003,Tablet,500.00,Dispositivos Electrónicos
+3,A004,Monitor,300.00,Periféricos
+4,A005,Teclado,50.00,Periféricos
+5,A006,Mouse,25.00,Periféricos
+6,A007,Impresora,150.00,Periféricos

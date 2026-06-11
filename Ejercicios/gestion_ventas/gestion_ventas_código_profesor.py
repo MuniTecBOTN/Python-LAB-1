@@ -10,12 +10,83 @@ def incrementar_boletos():
     cantidad_actual = cantidad_boletos.get()
     cantidad_boletos.set(cantidad_actual + 1)
     
+def agregar_producto():
+    producto_seleccionado = opcion_seleccionada_menu_producto.get()
+    cantidad = cantidad_boletos.get()
+    if producto_seleccionado != "SELECCIONE UN PRODUCTO" and cantidad > 0:
+        # Aquí puedes agregar el producto a la lista de productos agregados
+        codigo_producto = CTkLabel(
+            master=frame_productos_agregados,
+            text=productos[producto_seleccionado]["codigo"],
+            **estilo_etiqueta_normal_blanco
+        )
+        producto_nombre = CTkLabel(
+            master=frame_productos_agregados,
+            text=producto_seleccionado,
+            **estilo_etiqueta_normal_blanco
+        )   
+        precio_unitario = CTkLabel(
+            master=frame_productos_agregados,
+            text=f"Q{productos[producto_seleccionado]['precio']}",
+            **estilo_etiqueta_normal_blanco
+        )
+        precio_total = CTkLabel(
+            master=frame_productos_agregados,
+            text=f"Q{productos[producto_seleccionado]['precio'] * cantidad}",
+            **estilo_etiqueta_normal_blanco
+        )
+        codigo_producto.grid(
+            row=len(carrito) + 1,
+            column=0,
+            sticky="ew",
+            padx=10,
+            pady=10
+        )
+        producto_nombre.grid(
+            row=len(carrito) + 1,
+            column=1,
+            sticky="ew",
+            padx=10,
+            pady=10
+        )
+        cantidad_label = CTkLabel(
+            master=frame_productos_agregados,
+            text=str(cantidad),
+            **estilo_etiqueta_normal_blanco
+        )
+        cantidad_label.grid(
+            row=len(carrito) + 1,
+            column=2,
+            sticky="ew",
+            padx=10,
+            pady=10
+        )
+        precio_unitario.grid(
+            row=len(carrito) + 1,
+            column=3,
+            sticky="ew",
+            padx=10,
+            pady=10
+        )
+        precio_total.grid(
+            row=len(carrito) + 1,
+            column=4,
+            sticky="ew",
+            padx=10,
+            pady=10
+        )
+        carrito.append([codigo_producto, producto_nombre, cantidad_label, precio_unitario, precio_total])
+
+    else:
+        print("Por favor, seleccione un producto y una cantidad válida.")
+        
+        
 productos = {
-    "Xiaomi Redmi 15 C": {"precio": 15000, "stock": 100},
-    "Samsung Galaxy S25 ULTRA": {"precio": 20000, "stock": 50},
-    "Apple iPhone 15 Pro Max": {"precio": 15000, "stock": 75},
+    "Xiaomi Redmi 15 C": {"codigo": "X001", "precio": 15000, "stock": 100},
+    "Samsung Galaxy S25 ULTRA": {"codigo": "S001", "precio": 20000, "stock": 50},
+    "Apple iPhone 15 Pro Max": {"codigo": "A001", "precio": 15000, "stock": 75},
 }
-    
+carrito = []      
 # =========================================================
 # COLORES
 # =========================================================
@@ -23,7 +94,7 @@ COLOR_FONDO = "#f0f2f5"
 COLOR_AZUL = "#143a81"
 COLOR_AMARILLO = "#ffcf03"
 COLOR_BLANCO = "#ffffff"
-COLOR_ROJO = "#ee4c4c"
+COLOR_ROJO = "#190404"
 COLOR_VERDE = "#2ce429"
 TRANSPARENTE = "transparent"
 ALTURA_ESTANDAR_CAMPO = 50
@@ -46,6 +117,22 @@ estilo_etiqueta_normal = {
     "font": ("Montserrat", TAMAÑO_LETRA_NORMAL),
     "text_color": COLOR_BLANCO,
     "fg_color": COLOR_AMARILLO,
+}
+
+estilo_etiqueta_normal_blanco = {
+    "width": 120,
+    "height": ALTURA_ESTANDAR_CAMPO,
+    "font": ("Montserrat", TAMAÑO_LETRA_NORMAL),
+    "text_color": COLOR_AZUL,
+    "fg_color": COLOR_BLANCO,
+}
+
+estilo_etiqueta_normal_azul = {
+    "width": 120,
+    "height": ALTURA_ESTANDAR_CAMPO,
+    "font": ("Montserrat", TAMAÑO_LETRA_NORMAL),
+    "text_color": COLOR_BLANCO,
+    "fg_color": COLOR_AZUL,
 }
 
 estilo_campo = {
@@ -543,6 +630,7 @@ boton_incrementar.grid(
 boton_agregar = CTkButton(
     master=frame_producto,
     text="AGREGAR",
+    command=agregar_producto,
     **estilo_boton,
 ) 
 boton_agregar.grid(
@@ -553,20 +641,88 @@ boton_agregar.grid(
     pady=10
 )   
 
-frame_escroleable = CTkScrollableFrame(
+frame_productos_agregados =CTkScrollableFrame(
     master=tab_ventas,
     fg_color=COLOR_FONDO,
     corner_radius=0,
     scrollbar_button_color=COLOR_AZUL,
     scrollbar_button_hover_color=COLOR_AZUL,
 )   
-frame_escroleable.grid(
+frame_productos_agregados.grid(
     row=1,
     column=0,
     sticky="nsew",
     padx=20,
     pady=20
 )
+frame_productos_agregados.grid_columnconfigure(0,weight=2)
+frame_productos_agregados.grid_columnconfigure(1,weight=8)
+frame_productos_agregados.grid_columnconfigure(2,weight=1)
+frame_productos_agregados.grid_columnconfigure(3,weight=1)
+frame_productos_agregados.grid_columnconfigure(4,weight=2)
+frame_productos_agregados.grid_rowconfigure(0,weight=1)
+frame_productos_agregados.grid_rowconfigure(1,weight=10)
+
+etiqueta_codigo = CTkLabel(
+    master=frame_productos_agregados,
+    text="CODIGO",
+    **estilo_etiqueta_normal_azul,
+)   
+etiqueta_codigo.grid(
+    row=0,
+    column=0,
+    sticky="ew",
+    padx=10,
+    pady=10
+)
+etiqueta_producto = CTkLabel(
+    master=frame_productos_agregados,
+    text="ITEM",
+    **estilo_etiqueta_normal_blanco ,
+)
+etiqueta_producto.grid(
+    row=0,
+    column=1,
+    sticky="ew",
+    padx=10,
+    pady=10
+)
+etiqueta_cantidad = CTkLabel(
+    master=frame_productos_agregados,
+    text="CANTIDAD",
+    **estilo_etiqueta_normal_blanco,
+)
+etiqueta_cantidad.grid(
+    row=0,
+    column=2,
+    sticky="ew",
+    padx=10,
+    pady=10
+)   
+etiqueta_precio_unitario = CTkLabel(
+    master=frame_productos_agregados,
+    text="PRECIO UNITARIO",
+    **estilo_etiqueta_normal_blanco,
+)
+etiqueta_precio_unitario.grid(
+    row=0,
+    column=3,
+    sticky="ew",
+    padx=10,
+    pady=10
+)   
+etiqueta_precio_total = CTkLabel(
+    master=frame_productos_agregados,
+    text="PRECIO TOTAL",
+    **estilo_etiqueta_normal_azul,
+)   
+etiqueta_precio_total.grid(
+    row=0,
+    column=4,
+    sticky="ew",
+    padx=10,
+    pady=10
+)   
 
 # =========================================================
 # MAIN LOOP
