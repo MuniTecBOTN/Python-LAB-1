@@ -1,4 +1,5 @@
 from customtkinter import *
+from PIL import Image
 
 set_default_color_theme("dark-blue")
 
@@ -17,6 +18,14 @@ transparente = "transparent"
 altura_estandar_campo = 35
 
 tamaño_letra_normal = 18
+
+# =========================================================
+# CARGAR IMAGEN
+# =========================================================
+
+ruta_script = os.path.dirname(os.path.abspath(__file__))
+
+
 
 #=================================================
 # FUNCIONES
@@ -39,11 +48,6 @@ def incrementar_boletos():
     
 
  
-productos = {
-    "Xiaomi Redmi 15 C": {"precio": 15000, "stock": 100},
-    "Samsung Galaxy S25 ULTRA": {"precio": 20000, "stock": 50},
-    "Apple iPhone 15 Pro Max": {"precio": 15000, "stock": 75},
-}
 
 # =========================================================
 # ESTILOS
@@ -123,6 +127,16 @@ estilo_boton = {
     "corner_radius": 0,
 }
 
+estilo_boton_lipiar = {
+    "width": 120,
+    "height": altura_estandar_campo,
+    "fg_color": color_azul,
+    "hover_color": color_rojo,
+    "text_color": color_blanco,
+    "font": ("Montserrat", tamaño_letra_normal, "bold"),
+    "corner_radius": 0,
+}
+
 estilo_boton_spinbox = {
     "height": altura_estandar_campo,
     "fg_color": color_azul,
@@ -152,13 +166,18 @@ estilo_boton_segmentado = {
 #=================================================
 
 productos = {
-    "Iphone 16 pro Max": ["14:00-16:30", "19:00-21:30"],
-    "Iphone 16 pro Max": ["14:00-16:30", "19:00-21:30"],
-    "Iphone 16 pro Max": ["14:00-16:30", "19:00-21:30"],
-
+    "Xiaomi Redmi 15 C": {"codigo": "X001", "precio": 15000, "stock": 100, "ruta": "xiaomi_redmi_15c.jpg"},
+    "Samsung Galaxy S25 ULTRA": {"codigo": "S001", "precio": 20000, "stock": 50, "ruta": "samsung_galaxy_s25_ultra.jpg"},
+    "Apple iPhone 15 Pro Max": {"codigo": "A001", "precio": 15000, "stock": 75, "ruta": "apple_iphone_15_pro_max.jpg"},
+    "Huawei P60 Pro": {"codigo": "H001", "precio": 12000, "stock": 80, "ruta": "huawei_p60_pro.jpg"},
+    "Laptop Asus ROG Strix G16": {"codigo": "L001", "precio": 25000, "stock": 30, "ruta": "asus_rog_strix_g16.jpg"},
+    "Tablet Samsung Galaxy Tab S8": {"codigo": "T001", "precio": 8000, "stock": 60, "ruta": "samsung_galaxy_tab_s8.jpg"},
+    "Apple Watch series 9": {"codigo": "W001", "precio": 5000, "stock": 40, "ruta": "apple_watch_series_9.jpg"},
+    "Audífonos Sony WH-1000XM4": {"codigo": "A002", "precio": 3000, "stock": 90, "ruta": "sony_wh-1000xm4.jpg"},
+    "Sony xperia 1 V": {"codigo": "S002", "precio": 18000, "stock": 70, "ruta": "sony_xperia_1_v.jpg"},
 }
 
-
+carrito = []  
 
 #=================================================
 # VENTANA
@@ -236,14 +255,14 @@ boton_inicio = CTkButton(
 
 boton_inicio.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
-boton_ventas = CTkButton(
+boton_marcket = CTkButton(
     master=frame_sidebar,
-    text="VENTAS",
+    text="MARCKET",
     **estilo_boton,
-    command=lambda: ir_a_pestaña("VENTAS")
+    command=lambda: ir_a_pestaña("MARCKET")
     )
 
-boton_ventas.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
+boton_marcket.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
 
 boton_productos = CTkButton(
     master=frame_sidebar,
@@ -253,15 +272,6 @@ boton_productos = CTkButton(
     )
 
 boton_productos.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
-
-boton_inventario = CTkButton(
-    master=frame_sidebar,
-    text="INVENTARIO",
-    **estilo_boton,
-    command=lambda: ir_a_pestaña("INVENTARIO")
-    )
-
-boton_inventario.grid(row=4, column=0, padx=10, pady=10, sticky="ew")
 
 boton_clientes = CTkButton(
     master=frame_sidebar,
@@ -284,10 +294,10 @@ boton_reportes.grid(row=6, column=0, padx=10, pady=10, sticky="ew")
 boton_salir = CTkButton(
     master=frame_sidebar,
     text="SALIR",
-    **estilo_boton,
+    **estilo_boton_lipiar,
     )
 
-boton_salir.grid(row=8, column=0, padx=10, pady=10, sticky="ew")
+boton_salir.grid(row=8, column=0, padx=10, pady=10, sticky="sew")
 
 #=================================================
 # FRAME PANEL
@@ -343,9 +353,8 @@ pestañas.grid(
 )
 
 pestaña_inicio = pestañas.add("INICIO")
-pestaña_ventas = pestañas.add("VENTAS")
+pestaña_marcket = pestañas.add("MARCKET")
 pestaña_productos = pestañas.add("PRODUCTOS")
-pestaña_inventario = pestañas.add("INVENTARIO")
 pestaña_clientes = pestañas.add("CLIENTES")
 pestaña_reportes = pestañas.add("REPORTES")
 
@@ -502,43 +511,66 @@ total_clientes_inicio = CTkLabel(
 
 total_clientes_inicio.grid(row=1,column=0,sticky="n")
 
-
 #=================================================
-# FRAME VENTAS
-#=================================================
-
-pestaña_ventas.configure(fg_color=color_blanco)
-
-pestaña_ventas.grid_columnconfigure(0,weight=1)
-
-pestaña_ventas.grid_rowconfigure(0, weight=2)
-pestaña_ventas.grid_rowconfigure(1, weight=1)
-pestaña_ventas.grid_rowconfigure(2, weight=5)
-pestaña_ventas.grid_rowconfigure(3, weight=1)
-
-#=================================================
-# FRAME SUPERIOR VENTAS
+# FRAME CENTRAL INICIO
 #=================================================
 
-frame_superior_ventas = CTkFrame(
-    master=pestaña_ventas,
+frame_central_inicio = CTkFrame(
+    master=pestaña_inicio,
+    corner_radius=0,
+    fg_color=color_blanco
+)
+
+frame_central_inicio.grid(row=1, column=0, sticky="nsew",pady=10)
+
+#=================================================
+# FRAME INFERIOR INICIO
+#=================================================
+
+frame_inferior_inicio = CTkFrame(
+    master=pestaña_inicio,
+    corner_radius=0,
+    fg_color=color_blanco
+)
+
+frame_inferior_inicio.grid(row=2, column=0, sticky="nsew", pady=10)
+
+#=================================================
+# FRAME MARCKET
+#=================================================
+
+pestaña_marcket.configure(fg_color=color_blanco)
+
+pestaña_marcket.grid_columnconfigure(0,weight=1)
+
+pestaña_marcket.grid_rowconfigure(0, weight=2)
+pestaña_marcket.grid_rowconfigure(1, weight=1)
+pestaña_marcket.grid_rowconfigure(2, weight=5)
+pestaña_marcket.grid_rowconfigure(3, weight=1)
+
+#=================================================
+# FRAME SUPERIOR MARCKET
+#=================================================
+
+frame_superior_marcket = CTkFrame(
+    master=pestaña_marcket,
     fg_color=color_blanco,
     corner_radius=0
 )
 
-frame_superior_ventas.grid(row=0, column=0, sticky="snew")
+frame_superior_marcket.grid(row=0, column=0, sticky="snew")
 
-frame_superior_ventas.grid_columnconfigure(0,weight=1)
-frame_superior_ventas.grid_columnconfigure(1,weight=1)
+frame_superior_marcket.grid_columnconfigure(0,weight=1)
+frame_superior_marcket.grid_columnconfigure(1,weight=1)
 
-frame_superior_ventas.grid_rowconfigure(0,weight=1)
-frame_superior_ventas.grid_rowconfigure(1,weight=1)
-frame_superior_ventas.grid_rowconfigure(2,weight=1)
+frame_superior_marcket.grid_rowconfigure(0,weight=1)
+frame_superior_marcket.grid_rowconfigure(1,weight=1)
+frame_superior_marcket.grid_rowconfigure(2,weight=1)
 
 # ITEMS etiqueta y menu de opciones
 
 etiqueta_items = CTkLabel(
-    master=frame_superior_ventas,
+    master=frame_superior_marcket,
     text="ITEMS:",
     **estilo_etiqueta_normal
     )
@@ -550,7 +582,7 @@ etiqueta_items.grid(
 
 
 menu_items =CTkOptionMenu(
-    master=frame_superior_ventas,
+    master=frame_superior_marcket,
     **estilo_lista
 )
 
@@ -560,7 +592,7 @@ menu_items.grid(row=0,column=1,sticky="ew",padx=10)
 
 
 etiqueta_cantidad = CTkLabel(
-    master=frame_superior_ventas,
+    master=frame_superior_marcket,
     text="CANTIDAD:",
     **estilo_etiqueta_normal)
 
@@ -569,7 +601,7 @@ etiqueta_cantidad.grid(row=2, column=0,)
 #frame spinbox
 
 frame_spinbox = CTkFrame(
-    master=frame_superior_ventas,
+    master=frame_superior_marcket,
     fg_color="transparent",
     corner_radius=0
 )
@@ -636,7 +668,7 @@ boton_sumar.grid(
 #boton agregar
 
 boton_agregar = CTkButton(
-    master=frame_superior_ventas,
+    master=frame_superior_marcket,
     text="AGREGAR",
     **estilo_boton,
     )
@@ -644,32 +676,32 @@ boton_agregar = CTkButton(
 boton_agregar.grid(row=3, column=1, sticky="e", padx=10, pady=10)
 
 #=================================================
-# FRAME TITULOS VENTAS
+# FRAME TITULOS MARCKET
 #=================================================
 
-frame_titulos_ventas = CTkFrame(
-    master=pestaña_ventas,
+frame_titulos_marcket = CTkFrame(
+    master=pestaña_marcket,
     fg_color="transparent",
     corner_radius=0
 )
 
-frame_titulos_ventas.grid(
+frame_titulos_marcket.grid(
     row=1,
     column=0,
     sticky="ew",
     padx=10
 )
 
-frame_titulos_ventas.grid_columnconfigure(0, weight=2)
-frame_titulos_ventas.grid_columnconfigure(1, weight=8)
-frame_titulos_ventas.grid_columnconfigure(2, weight=1)
-frame_titulos_ventas.grid_columnconfigure(3, weight=2)
-frame_titulos_ventas.grid_columnconfigure(4, weight=2)
+frame_titulos_marcket.grid_columnconfigure(0, weight=2)
+frame_titulos_marcket.grid_columnconfigure(1, weight=8)
+frame_titulos_marcket.grid_columnconfigure(2, weight=1)
+frame_titulos_marcket.grid_columnconfigure(3, weight=2)
+frame_titulos_marcket.grid_columnconfigure(4, weight=2)
 
-frame_titulos_ventas.grid_rowconfigure(0, weight=1)
+frame_titulos_marcket.grid_rowconfigure(0, weight=1)
 
 etiqueta_codigo_scroll = CTkLabel(
-    master=frame_titulos_ventas,
+    master=frame_titulos_marcket,
     text="CODIGO",
     **estilo_etiqueta_normal_scr
 )
@@ -682,7 +714,7 @@ etiqueta_codigo_scroll.grid(
 )
 
 etiqueta_item_scroll = CTkLabel(
-    master=frame_titulos_ventas,
+    master=frame_titulos_marcket,
     text="ITEM",
     **estilo_etiqueta_adicional_scr
 )
@@ -695,7 +727,7 @@ etiqueta_item_scroll.grid(
 )
 
 etiqueta_cantidad_scroll = CTkLabel(
-    master=frame_titulos_ventas,
+    master=frame_titulos_marcket,
     text="CANTIDAD",
     **estilo_etiqueta_normal_scr
 )
@@ -708,7 +740,7 @@ etiqueta_cantidad_scroll.grid(
 )
 
 etiqueta_precio_scroll = CTkLabel(
-    master=frame_titulos_ventas,
+    master=frame_titulos_marcket,
     text="PRECIO",
     **estilo_etiqueta_normal_scr
 )
@@ -721,7 +753,7 @@ etiqueta_precio_scroll.grid(
 )
 
 etiqueta_total_scroll = CTkLabel(
-    master=frame_titulos_ventas,
+    master=frame_titulos_marcket,
     text="TOTAL",
     **estilo_etiqueta_adicional_scr
 )
@@ -734,11 +766,11 @@ etiqueta_total_scroll.grid(
 )
 
 #=================================================
-# FRAME SCROLLABLE VENTAS
+# FRAME SCROLLABLE MARCKET
 #=================================================
 
-fram_scroll_ventas = CTkScrollableFrame(
-    master=pestaña_ventas,
+fram_scroll_marcket = CTkScrollableFrame(
+    master=pestaña_marcket,
     fg_color=color_fondo,
     corner_radius=0,
     scrollbar_button_color=color_amarillo,
@@ -746,36 +778,36 @@ fram_scroll_ventas = CTkScrollableFrame(
     border_color=color_blanco,
 )
 
-fram_scroll_ventas.grid(row=2, columnspan=5, sticky="snew",padx=10)
+fram_scroll_marcket.grid(row=2, columnspan=5, sticky="snew",padx=10)
 
-fram_scroll_ventas.grid_columnconfigure(0,weight=2)
-fram_scroll_ventas.grid_columnconfigure(1,weight=8)
-fram_scroll_ventas.grid_columnconfigure(2,weight=1)
-fram_scroll_ventas.grid_columnconfigure(3,weight=2)
-fram_scroll_ventas.grid_columnconfigure(4,weight=2)
+fram_scroll_marcket.grid_columnconfigure(0,weight=2)
+fram_scroll_marcket.grid_columnconfigure(1,weight=8)
+fram_scroll_marcket.grid_columnconfigure(2,weight=1)
+fram_scroll_marcket.grid_columnconfigure(3,weight=2)
+fram_scroll_marcket.grid_columnconfigure(4,weight=2)
 
-fram_scroll_ventas.grid_rowconfigure(0,weight=1)
+fram_scroll_marcket.grid_rowconfigure(0,weight=1)
 
 #=================================================
-# FRAME INFERIOR VENTAS
+# FRAME INFERIOR MARCKET
 #=================================================
 
-frame_inferior_ventas = CTkFrame(
-    master=pestaña_ventas,
+frame_inferior_marcket = CTkFrame(
+    master=pestaña_marcket,
     fg_color=color_blanco,
     corner_radius=0
 )
 
-frame_inferior_ventas.grid(row=3, column=0, sticky="snew")
+frame_inferior_marcket.grid(row=3, column=0, sticky="snew")
 
-frame_inferior_ventas.grid_columnconfigure(0,weight=1)
+frame_inferior_marcket.grid_columnconfigure(0,weight=1)
 
-frame_inferior_ventas.grid_rowconfigure(0,weight=1)
+frame_inferior_marcket.grid_rowconfigure(0,weight=1)
 
 #boton facturar
 
 boton_facturar = CTkButton(
-    master=frame_inferior_ventas,
+    master=frame_inferior_marcket,
     text="FACTURAR",
     **estilo_boton
 )
@@ -783,14 +815,224 @@ boton_facturar = CTkButton(
 boton_facturar.grid(row=3, column=1, sticky="e", padx=10, pady=10)
 
 #=================================================
+# FRAME PRINCIPAL PRODUCTOS
+#=================================================
 
 pestaña_productos.configure(fg_color=color_fondo)
-pestaña_productos.grid_columnconfigure(0,weight=1)
-pestaña_productos.grid_rowconfigure(0,weight=1)
 
-pestaña_inventario.configure(fg_color=color_fondo)
-pestaña_inventario.grid_columnconfigure(0,weight=1)
-pestaña_inventario.grid_rowconfigure(0,weight=1)
+pestaña_productos.grid_columnconfigure(0,weight=1)
+
+pestaña_productos.grid_rowconfigure(0, weight=1)
+pestaña_productos.grid_rowconfigure(1, weight=10)
+
+#=================================================
+# FRAME AGREGAR PRODUCTOS
+#=================================================
+
+frame_agregar_productos = CTkFrame(
+    master=pestaña_productos,
+    fg_color=color_blanco,
+    corner_radius=0,
+)
+
+frame_agregar_productos.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+
+frame_agregar_productos.grid_columnconfigure(0, weight=1)
+frame_agregar_productos.grid_columnconfigure(1, weight=1)
+frame_agregar_productos.grid_columnconfigure(2, weight=1)
+frame_agregar_productos.grid_columnconfigure(3, weight=1)
+
+frame_agregar_productos.grid_rowconfigure(0, weight=1)
+frame_agregar_productos.grid_rowconfigure(1, weight=1)
+frame_agregar_productos.grid_rowconfigure(2, weight=1)
+
+
+etiqueta_agregar_productos = CTkLabel(
+    master=frame_agregar_productos,
+    text="PRODUCTO",
+    **estilo_etiqueta_normal
+)
+
+etiqueta_agregar_productos.grid(row=0, column=0, padx=10, pady=10)
+
+campo_agregar_productos = CTkEntry(
+    master=frame_agregar_productos,
+    **estilo_campo
+)
+
+campo_agregar_productos.grid(row=0, column=1, padx=10, pady=10)
+
+etiqueta_agregar_marca = CTkLabel(
+    master=frame_agregar_productos,
+    text="MARCA",
+    **estilo_etiqueta_normal
+)
+
+etiqueta_agregar_marca.grid(row=1, column=0, padx=10, pady=10)
+
+campo_agregar_marca = CTkEntry(
+    master=frame_agregar_productos,
+    **estilo_campo
+)
+
+campo_agregar_marca.grid(row=1, column=1, padx=10, pady=10)
+
+etiqueta_agregar_precio = CTkLabel(
+    master=frame_agregar_productos,
+    text="PRECIO",
+    **estilo_etiqueta_normal
+)
+
+etiqueta_agregar_precio.grid(row=0, column=2, padx=10, pady=10)
+
+campo_agregar_precio = CTkEntry(
+    master=frame_agregar_productos,
+    **estilo_campo
+)
+
+campo_agregar_precio.grid(row=0, column=3, padx=10, pady=10)
+
+etiqueta_agregar_stock = CTkLabel(
+    master=frame_agregar_productos,
+    text="STOCK",
+    **estilo_etiqueta_normal
+)
+
+etiqueta_agregar_stock.grid(row=1, column=2, padx=10, pady=10)
+
+campo_agregar_stock = CTkEntry(
+    master=frame_agregar_productos,
+    **estilo_campo
+)
+
+campo_agregar_stock.grid(row=1, column=3, padx=10, pady=10)
+
+#=================================================
+#BOTON LIMPIAR PRODUCTOS
+
+boton_limpiar_productos = CTkButton(
+    master=frame_agregar_productos,
+    text="LIMPIAR",
+    **estilo_boton_lipiar,
+)
+
+boton_limpiar_productos.grid(row=2, column=1, sticky="e", padx=10, pady=10)
+
+#=================================================
+#BOTON AGREGAR PRODUCTOS
+
+boton_agregar_productos = CTkButton(
+    master=frame_agregar_productos,
+    text="AGREGAR",
+    **estilo_boton,
+)
+
+boton_agregar_productos.grid(row=2, column=2, sticky="w", padx=10, pady=10)
+
+
+#=================================================
+# FRAME PRODUCTOS
+#=================================================
+
+frame_principal_productos = CTkScrollableFrame(
+    master=pestaña_productos,
+    fg_color=color_blanco,
+    corner_radius=0,
+    scrollbar_button_color=color_amarillo,
+    scrollbar_button_hover_color=color_azul,
+    border_color=color_blanco,)
+
+frame_principal_productos.grid(row=1, column=0, sticky="snew", padx=10, pady=10)
+
+columna = 0
+fila = 0
+
+for producto in productos: 
+
+    frame_principal_productos.grid_columnconfigure(columna, weight=1)
+    frame_principal_productos.grid_rowconfigure(fila, weight=1)
+
+    frame_producto = CTkFrame(
+        master=frame_principal_productos,
+        fg_color=color_blanco,
+        corner_radius=0,
+    )
+    
+    frame_producto.grid_rowconfigure(0, weight=10)
+    frame_producto.grid_rowconfigure(1, weight=2)
+    frame_producto.grid_rowconfigure(2, weight=2)
+    
+    frame_producto.grid_columnconfigure(0, weight=1)
+    
+    frame_producto.grid(
+        row=fila,
+        column=columna,
+        sticky="ew",
+        padx=10,
+        pady=10,
+    )
+    ruta_imagen = os.path.join(ruta_script, f"imagenes/{productos[producto]['ruta']}")
+
+    # Cargar imagen
+
+    imagen_producto = CTkImage(
+        light_image=Image.open(ruta_imagen),
+        dark_image=Image.open(ruta_imagen),
+        size=(100, 100)
+    )
+
+    etiqueta_imagen = CTkLabel(
+        master=frame_producto,
+        text="",
+        **estilo_etiqueta_adicional_scr,
+        image=imagen_producto,
+    )
+    etiqueta_imagen.grid(
+        row=0,
+        column=0,
+        #sticky="nsew",
+        padx=10,
+        pady=10,
+    )
+    
+    etiqueta_producto = CTkLabel(
+        master=frame_producto,
+        text=producto,
+        **estilo_etiqueta_adicional
+    )
+    
+    etiqueta_producto.grid(
+        row=1,
+        column=0,
+        #sticky="nsew",
+        padx=10,
+        pady=10,
+    )
+    
+    etiqueta_precio = CTkLabel(
+        master=frame_producto,
+        text=f"Q{productos[producto]['precio']}",
+        **estilo_etiqueta_normal_scr
+    )
+    
+    etiqueta_precio.grid(
+        row=2,
+        column=0,
+        #sticky="nsew",
+        padx=10,
+        pady=10,
+    )
+    
+    columna += 1
+    if columna >=3:
+        columna = 0
+        fila += 1
+
+
+
+#=================================================
+
+
 
 pestañas._segmented_button.grid_forget()
 
