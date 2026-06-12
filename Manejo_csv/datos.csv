@@ -1,0 +1,4 @@
+id,producto,precio,stock,ruta
+X001,Xiaomi Redmi 15 C,15000,100,imagenes/xiaomi_redmi
+S001,Samsung Galaxy S25 ULTRA,20000,50,imagenes/samsung_galaxy_s25_ultra
+A001,Apple iPhone 15 Pro Max,15000,75,imagenes/apple_
