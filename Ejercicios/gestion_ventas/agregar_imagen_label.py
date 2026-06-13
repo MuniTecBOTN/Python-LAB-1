@@ -47,7 +47,7 @@ ruta_imagen = os.path.join(ruta_script, "imagenes/dragon.webp")
 imagen_nave = CTkImage(
     light_image=Image.open(ruta_imagen),
     dark_image=Image.open(ruta_imagen),
-    size=(600, 600)
+    size=(800, 800)
 )
 
 etiqueta_imagen = CTkLabel(
