@@ -2,15 +2,18 @@ from customtkinter import *
 import os
 from PIL import Image
 from datetime import datetime
+from tabla_customtkinter import CTkTable
+
+
 set_default_color_theme("dark-blue")
-set_appearance_mode("dark")
+set_appearance_mode("light")
 
 #==========================================================================================
 # VENTANA
 #==========================================================================================
 ventana = CTk()
 ventana.title("Organizador")
-ventana.geometry("800x600")
+ventana.geometry("850x650")
 ventana.grid_columnconfigure(0, weight=1)
 ventana.grid_rowconfigure(0, weight=1)
 
@@ -39,30 +42,29 @@ letra_titulo="Ultra"
 estilo_botones={
     "width": 120,
     "height": ALTURA_ESTANDAR_CAMPO,
-    "text_color": color_blanco,
     "font": (NOMBRE_FUENTE, TAMAÑO_LETRA_NORMAL, "bold"),
     "corner_radius": 0,
+    "text_color":color_blanco
 }
 
 estilo_etiqueta_titulo = {
-    "width": 120,
-    "height": ALTURA_ESTANDAR_CAMPO,
+    "height": 65,
     "font": (letra_titulo, TAMAÑO_LETRA_TITULO, "bold"),
     "text_color": color_blanco,
 }
 
-estilo_etiquetas={"width":180, 
+estilo_etiquetas={"width":190, 
                   "height":40,
                   "justify":"center",
                   "font":(NOMBRE_FUENTE, 16, "bold"),
-                  "text_color":color_negro,
+                  "text_color":color_blanco,
                   }
 
 estilo_campo = {
     "width": 200,
     "height": ALTURA_ESTANDAR_CAMPO,
-    "fg_color": color_blanco,
-    "border_color": color_blanco,
+    "fg_color":color_blanco,
+    "border_color": color_negro,
     "text_color": color_negro,
     "justify": "center",
     "corner_radius": 0,
@@ -99,7 +101,7 @@ frame_izquierdo.grid_rowconfigure(4, weight=1)
 frame_izquierdo.grid_rowconfigure(5, weight=1)
 frame_izquierdo.grid_rowconfigure(6, weight=1)
 frame_izquierdo.grid_columnconfigure(0,weight=1)
-
+frame_izquierdo.grid_propagate(False)
 titulo_izquierdo=CTkLabel(master=frame_izquierdo,
                         corner_radius=0,
                         fg_color=transparente,
@@ -175,15 +177,16 @@ frame_derecho.grid(row=0,
                    sticky="nswe"
                    )
 frame_derecho.grid_columnconfigure(0, weight=1)
-frame_derecho.grid_rowconfigure(0,weight=1)
+frame_derecho.grid_rowconfigure(0,weight=0)
 frame_derecho.grid_rowconfigure(1,weight=50)
+frame_derecho.grid_propagate(False)
 
-etiquta_titulo=CTkLabel(master=frame_derecho,
+etiqueta_titulo=CTkLabel(master=frame_derecho,
                         **estilo_etiqueta_titulo, 
                         text="INICIO",
-                        fg_color=color_rosita
-                        )
-etiquta_titulo.grid(row=0, 
+                        fg_color=color_rosita,
+                        anchor="center")
+etiqueta_titulo.grid(row=0, 
                     column=0, 
                     sticky="wens"
                     )
@@ -214,34 +217,24 @@ pestañas.grid(row=0,
               padx=0,
               pady=0)
 
-pestaña_tareas=pestañas.add("TAREAS")
-pestaña_tareas.grid_columnconfigure(0, weight=1)
-pestaña_tareas.grid_rowconfigure(0, weight=1)
-pestaña_tareas.configure(fg_color=color_azul_2, 
-                             corner_radius=0,
-                             border_width=0)
-
 pestaña_horario=pestañas.add("HORARIO")
 pestaña_horario.grid_columnconfigure(0, weight=1)
 pestaña_horario.grid_rowconfigure(0, weight=1)
 pestaña_horario.configure(fg_color=color_azul_2)
 
-pestaña_configuracion=pestañas.add("CONFIGURACION")
-pestaña_configuracion.grid_columnconfigure(0, weight=1)
-pestaña_configuracion.grid_rowconfigure(0, weight=1)
-pestaña_configuracion.configure(fg_color=color_azul_2)
 
 
 pestañas._segmented_button.grid_forget()
 
 def ir_a_pestaña(nombre_pestaña):
     pestañas.set(nombre_pestaña)
-    etiquta_titulo.configure(text=nombre_pestaña)
+    etiqueta_titulo.configure(text=nombre_pestaña)
+    etiqueta_titulo.grid_propagate(False)
 
 #==========================================================================================
 # PESTAÑA INICIO
 #==========================================================================================
-nombre_usuario_inicial="Abi"
+nombre_usuario="Abi"
 pestaña_inicio=pestañas.add("INICIO")
 pestaña_inicio.grid_columnconfigure (0,weight=1)
 pestaña_inicio.grid_rowconfigure (0, weight=1)
@@ -254,7 +247,7 @@ pestaña_inicio.configure(fg_color= color_azul_2,
 titulo_bienvenida=CTkLabel(master=pestaña_inicio,
                            corner_radius=0,
                            fg_color=transparente,
-                           text=f"Bienvenida, {nombre_usuario_inicial}",
+                           text=f"Bienvenida, {nombre_usuario}",
                            text_color=color_negro,
                            font=(letra_cursiva, 65, "bold"),
                            justify="center"
@@ -308,7 +301,7 @@ datos_inicio_tareas_proxi.grid(row=1, column=1, sticky="sne", padx=20)
 # IMAGEN
 #==================================
 ruta_script = os.path.dirname(os.path.abspath(__file__))
-ruta_imagen = os.path.join(ruta_script, "imagenes/banner.jpg")
+ruta_imagen = os.path.join(ruta_script, "banner.jpg")
 
 imagen_banner = CTkImage(
     light_image=Image.open(ruta_imagen),
@@ -351,14 +344,14 @@ frame_principal_materias=CTkFrame(master=pestaña_materias,
                                   corner_radius=10, 
                                   fg_color=color_blanco)
 frame_principal_materias.grid(row=1, column=0, sticky="nswe", padx=10, pady=10)
+frame_principal_materias.grid_columnconfigure(0, weight=1)
+frame_principal_materias.grid_rowconfigure(0, weight=1)
+frame_principal_materias.grid_rowconfigure(1, weight=8)
+frame_principal_materias.grid_rowconfigure(2, weight=1)
 
-#==========================================================================================
-# PESTAÑA MATERIAS
-#==========================================================================================
-# Lista interna para guardar las materias
-lista_materias = []  # cada elemento: {"nombre": str, "profesor": str}
 
-# --- Frame superior: formulario para agregar ---
+lista_materias = [] 
+
 frame_form_materias = CTkFrame(master=frame_principal_materias,
                                corner_radius=10,
                                fg_color=color_rosita)
@@ -388,78 +381,124 @@ campo_profesor = CTkEntry(master=frame_form_materias,
                           **estilo_campo)
 campo_profesor.grid(row=0, column=3, padx=10, pady=10)
 
-# --- Frame inferior: tabla de materias ---
-frame_tabla_materias = CTkScrollableFrame(master=frame_principal_materias,
-                                          corner_radius=10,
-                                          fg_color=color_blanco)
-frame_tabla_materias.grid(row=1, column=0, sticky="nswe", padx=10, pady=(0, 10))
-frame_tabla_materias.grid_columnconfigure(0, weight=3)
-frame_tabla_materias.grid_columnconfigure(1, weight=3)
-frame_tabla_materias.grid_columnconfigure(2, weight=1)
-frame_tabla_materias.grid_columnconfigure(3, weight=1)
-
-frame_principal_materias.grid_rowconfigure(0, weight=1)
-frame_principal_materias.grid_rowconfigure(1, weight=10)
-frame_principal_materias.grid_columnconfigure(0, weight=1)
-
-
-frame_materia= CTkLabel(master=frame_tabla_materias,
-                        text="Materia",   
-                        font=(NOMBRE_FUENTE, 16, "bold"), 
-                        text_color=color_negro, 
-                        fg_color=color_rosita,   
-                        width=180, 
-                        height=40, 
-                        corner_radius=0)
-frame_materia.grid(row=0, column=0, padx=2, pady=2, sticky="we")
-frame_profesor= CTkLabel(master=frame_tabla_materias, 
-                         text="Profesor",  
-                         font=(NOMBRE_FUENTE, 16, "bold"), 
-                         text_color=color_negro, 
-                         fg_color=color_rosita,   
-                         width=180, 
-                         height=40, 
-                         corner_radius=0)
-frame_profesor.grid(row=0, column=1, padx=2, pady=2, sticky="we")
-frame_editar= CTkLabel(master=frame_tabla_materias, 
-                       text="Editar",    
-                       font=(NOMBRE_FUENTE, 16, "bold"), 
-                       text_color=color_negro, 
-                       fg_color=color_verde,    
-                       width=90,  
-                       height=40, 
-                       corner_radius=0)
-frame_editar.grid(row=0, column=2, padx=2, pady=2, sticky="we")
-frame_eliminiar=CTkLabel(master=frame_tabla_materias, 
-                         text="Eliminar",  
-                         font=(NOMBRE_FUENTE, 16, "bold"), 
-                         text_color=color_negro, 
-                         fg_color=color_amarillo, 
-                         width=90,  
-                         height=40, 
-                         corner_radius=0)
-frame_eliminiar.grid(row=0, column=3, padx=2, pady=2, sticky="we")
-
-
-
 boton_agregar_materia = CTkButton(master=frame_form_materias,
                                   **estilo_botones,
                                   text="➕ AGREGAR",
                                   fg_color=color_azul_2,
-                                  hover_color=color_verde,)
+                                  hover_color=color_verde)
                                   
-boton_agregar_materia.grid(row=1, column=0, columnspan=4, pady=10)  
+boton_agregar_materia.grid(row=0, column=4, pady=10, padx=5)  
+
+tabla_materias=CTkTable(master=frame_principal_materias,
+                        columnas=["Materia", "Profesor"],
+                        datos=[],
+                        row=1,
+                        column=0,
+                        padx=10,
+                        pady=10,
+                        sticky="nswe",
+                        height=6)
+
+frame_botones_materias=CTkFrame(master=frame_principal_materias,
+                                corner_radius=0,
+                                fg_color=transparente)
+frame_botones_materias.grid(column=0, row=2, pady=10),
+frame_botones_materias.grid_rowconfigure(0, weight=1)
+frame_principal_materias.grid_columnconfigure(0, weight=1)
+frame_principal_materias.grid_columnconfigure(1, weight=1)
+
+boton_editar=CTkButton(master=frame_botones_materias,
+                       **estilo_botones,
+                       text="✏️ EDITAR",
+                       fg_color=color_verde,
+                       hover_color=color_azul_2)
+boton_editar.grid(row=0, column=0, padx=10)
+boton_eliminar=CTkButton(master=frame_botones_materias,
+                         **estilo_botones,
+                         fg_color=color_amarillo,
+                         hover_color=color_azul_2,
+                         text="🗑️ELIMINAR")
+boton_eliminar.grid(row=0,column=1, padx=10)
+
+#==========================================================================================
+# Frame Tareas
+#==========================================================================================
+pestaña_tareas=pestañas.add("TAREAS")
+pestaña_tareas.grid_columnconfigure(0, weight=1)
+pestaña_tareas.grid_rowconfigure(0, weight=1)
+pestaña_tareas.grid_rowconfigure(1, weight=50)
+pestaña_tareas.configure(fg_color=color_azul_2)
+
+titiulo_tareas= CTkLabel(master=pestaña_tareas,
+                          corner_radius=0,
+                          fg_color=transparente,
+                          text="Tareas",
+                          text_color=color_negro,
+                          font=(letra_cursiva, 50, "bold"),
+                          justify="center"
+                          )
+titiulo_tareas.grid(row=0, column=0)
+frame_principal_tareas=CTkFrame(master=pestaña_tareas,
+                                  corner_radius=10, 
+                                  fg_color=color_blanco)
+frame_principal_tareas.grid(row=1, column=0, sticky="nswe", padx=10, pady=10)
+frame_principal_tareas.grid_columnconfigure(0, weight=1)
+frame_principal_tareas.grid_rowconfigure(0, weight=1)
+frame_principal_tareas.grid_rowconfigure(1, weight=8)
+frame_principal_tareas.grid_rowconfigure(2, weight=1)
 
 
-  
+lista_tareas = [] 
 
+frame_form_tareas = CTkFrame(master=frame_principal_tareas,
+                               corner_radius=10,
+                               fg_color=color_rosita)
+frame_form_tareas.grid(row=0, column=0, sticky="new", padx=10, pady=10)
+frame_form_tareas.grid_columnconfigure(0, weight=1)
+frame_form_tareas.grid_columnconfigure(1, weight=1)
+frame_form_tareas.grid_columnconfigure(2, weight=1)
+frame_form_tareas.grid_columnconfigure(3, weight=1)
+frame_form_tareas.grid_columnconfigure(4, weight=1)
+
+etiqueta_tarea=CTkLabel(master=frame_form_tareas,
+                        **estilo_etiquetas,
+                        fg_color=transparente,
+                        corner_radius=0,
+                        text="Tareas: ")
+etiqueta_tarea.grid(row=0, column=0,padx=10, pady=10)
+campo_tareas=CTkEntry(master=frame_form_tareas,
+                      **estilo_campo,)
+campo_tareas.grid(row=0, column=1,padx=10, pady=10)
+
+etiqueta_entrega=CTkLabel(master=frame_form_tareas,
+                        **estilo_etiquetas,
+                        fg_color=transparente,
+                        corner_radius=0,
+                        text="Fecha entrega: ")
+etiqueta_entrega.grid(row=0, column=2,padx=10, pady=10)
+campo_entrega=CTkEntry(master=frame_form_tareas,
+                      **estilo_campo,)
+campo_entrega.grid(row=0, column=3,padx=10, pady=10)
+
+boton_agregar_tareas=CTkButton(master=frame_form_tareas,
+                               **estilo_botones,
+                               fg_color=color_azul_2,
+                               hover_color=color_verde,
+                               text="➕ Agregar")
+boton_agregar_tareas.grid(row=0, column=4, padx=10, pady=10)
 #==========================================================================================
 # PESTAÑA CONFIGURACION
 #==========================================================================================
+
+pestaña_configuracion=pestañas.add("CONFIGURACION")
 pestaña_configuracion.grid_columnconfigure(0, weight=1)
 pestaña_configuracion.grid_rowconfigure(0, weight=1)
 pestaña_configuracion.grid_rowconfigure(1, weight=1)
 pestaña_configuracion.grid_rowconfigure(2, weight=1)
+
+pestaña_configuracion.configure(fg_color=color_azul_2)
+
+
 
 titulo_configuracion = CTkLabel(master=pestaña_configuracion,
                                 corner_radius=0,
@@ -473,7 +512,7 @@ titulo_configuracion.grid(row=0, column=0, pady=10)
 frame_opciones = CTkFrame(master=pestaña_configuracion,
                           corner_radius=10,
                           fg_color=color_blanco)
-frame_opciones.grid(row=1, column=0, sticky="nswe", padx=30, pady=10)
+frame_opciones.grid(row=1, column=0, sticky="nswe", padx=20, pady=10)
 frame_opciones.grid_columnconfigure(0, weight=1)
 frame_opciones.grid_columnconfigure(1, weight=1)
 frame_opciones.grid_rowconfigure(0, weight=1)
@@ -497,14 +536,14 @@ def guardar_nombre():
     if nuevo != "":
         titulo_bienvenida.configure(text=f"Bienvenida, {nuevo}")
 
-CTkButton(master=frame_opciones,
+boton_guardar=CTkButton(master=frame_opciones,
           **estilo_botones,
           text="💾 Guardar",
           fg_color=color_rosita,
           hover_color=color_azul_2,
           command=guardar_nombre).grid(row=0, column=2, padx=20, pady=15)
 
-CTkLabel(master=frame_opciones,
+etiqueta_tema=CTkLabel(master=frame_opciones,
          **estilo_etiquetas,
          fg_color=color_rosita,
          text="Tema:").grid(row=1, column=0, padx=20, pady=15, sticky="e")
@@ -550,7 +589,7 @@ texto_desarrolado_por= CTkLabel(master=frame_acerca,
          fg_color=transparente)
 texto_desarrolado_por.grid(row=2, column=0, pady=(2, 10))
 
-
+etiqueta_titulo
 #==========================================================================================
 # 
 #==========================================================================================
