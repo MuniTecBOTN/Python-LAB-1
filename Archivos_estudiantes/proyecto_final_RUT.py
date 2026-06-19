@@ -1,5 +1,6 @@
 from customtkinter import *
 import os
+import sys
 from PIL import Image
 from datetime import datetime
 from tabla_customtkinter import CTkTable
@@ -75,7 +76,18 @@ estilo_campo = {
 #==========================================================================================
 # DEF FUNCIONES
 #==========================================================================================
-
+def ruta_recursos(relative_path):
+    """ Obtiene la ruta de los recursos, compatible con desarrollo y PyInstaller """
+    try:
+        # Si corre desde el .exe empaquetado por PyInstaller
+        base_path = sys._MEIPASS
+    except Exception:
+        # Si corre normal en VS Code, mantiene la carpeta 'imagenes'
+        base_path = os.path.abspath(".")
+        if not os.path.exists(os.path.join(base_path, relative_path)):
+            return os.path.join(base_path, "imagenes", relative_path)
+            
+    return os.path.join(base_path, relative_path)
 #-----------------------------
 #INICIO DEFINICIONES
 #-----------------------------
@@ -247,7 +259,7 @@ boton_inicio= CTkButton(master=frame_izquierdo,
                         fg_color=transparente,
                         hover_color=color_azul_2)
                         
-boton_inicio.grid(row=1, column=0, sticky="ns")
+boton_inicio.grid(row=1, column=0, sticky="news")
 
 boton_MATERIAS= CTkButton(master=frame_izquierdo,
                         **estilo_botones,
@@ -256,7 +268,7 @@ boton_MATERIAS= CTkButton(master=frame_izquierdo,
                         fg_color=transparente,
                         hover_color=color_azul_2
                         )
-boton_MATERIAS.grid(row=2, column=0, sticky="ns")
+boton_MATERIAS.grid(row=2, column=0, sticky="nsew")
 
 boton_tareas= CTkButton(master=frame_izquierdo,
                         **estilo_botones,
@@ -265,7 +277,7 @@ boton_tareas= CTkButton(master=frame_izquierdo,
                         command=lambda: ir_a_pestaña("TAREAS"),
                         hover_color=color_azul_2
                         )
-boton_tareas.grid(row=3, column=0, sticky="ns")
+boton_tareas.grid(row=3, column=0, sticky="ewns")
 
 boton_horario= CTkButton(master=frame_izquierdo,
                         **estilo_botones,
@@ -274,7 +286,7 @@ boton_horario= CTkButton(master=frame_izquierdo,
                         command=lambda: ir_a_pestaña("HORARIO"),
                         hover_color=color_azul_2
                         )
-boton_horario.grid(row=4, column=0, sticky="ns")
+boton_horario.grid(row=4, column=0, sticky="news")
 
 boton_configuracion= CTkButton(master=frame_izquierdo,
                                width= 120,
@@ -287,7 +299,7 @@ boton_configuracion= CTkButton(master=frame_izquierdo,
                                command=lambda: ir_a_pestaña("CONFIGURACION"),
                                hover_color=color_azul_2
                                )
-boton_configuracion.grid(row=5, column=0, sticky="ns")
+boton_configuracion.grid(row=5, column=0, sticky="nsew")
 
 boton_salir= CTkButton(master=frame_izquierdo,
                         **estilo_botones,
@@ -295,7 +307,7 @@ boton_salir= CTkButton(master=frame_izquierdo,
                         fg_color=transparente,
                         hover_color=color_azul_2,
                         command=ventana.destroy)
-boton_salir.grid(row=6, column=0, sticky="n")
+boton_salir.grid(row=6, column=0, sticky="news")
 
 #==========================================================================================
 # FRAME DERECHO
@@ -437,8 +449,8 @@ datos_inicio_tareas_proxi.grid(row=1, column=1, sticky="sne", padx=20)
 #==================================
 # IMAGEN
 #==================================
-ruta_script = os.path.dirname(os.path.abspath(__file__))
-ruta_imagen = os.path.join(ruta_script, "banner.jpg")
+
+ruta_imagen = ruta_recursos("banner.jpg")
 
 imagen_banner = CTkImage(
     light_image=Image.open(ruta_imagen),
@@ -458,6 +470,7 @@ etiqueta_imagen.grid(
         padx=20,
         pady=5
 )
+
 
 #==========================================================================================
 #FRAME MATERIAS 
@@ -848,7 +861,8 @@ for fila, hora in enumerate(horario_clases, start=1):
                                         command=lambda d=dia, h=hora: seleccionar_celda(d, h))
         boton_celda_horario.grid(row=fila, column=col, sticky="nswe", padx=1, pady=1)
         botones_horario[(dia, hora)] = boton_celda_horario
-        
+
+
 for boton in botones_horario.values():
     boton.configure(border_width=2)
     boton.configure(border_width=0)
