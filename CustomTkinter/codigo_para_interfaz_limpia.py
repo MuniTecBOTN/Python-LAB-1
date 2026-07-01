@@ -1,6 +1,6 @@
 from customtkinter import *
 
-Hola
+
 COLOR_PRIMARIO = "#2a00ac"
 COLOR_SECUNDARIO  = "#81dc00"
 COLOR_VERDE = "#10B981"
