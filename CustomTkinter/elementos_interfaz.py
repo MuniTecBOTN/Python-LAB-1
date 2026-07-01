@@ -1,21 +1,55 @@
 from customtkinter import *
 
-set_default_color_theme("green")
+COLOR_PRIMARIO = "#2a00ac"
+COLOR_SECUNDARIO = "#81dc00"
+COLOR_VERDE = "#10B981"
+COLOR_ROJO = "#EF4444"
+COLOR_BLANCO = "#FFFFFF"
+COLOR_FONDO = "#e3e5f3"
+COLOR_BORDE = "#e3e5f3"
+TRANSPARENTE = "transparent"
+
+
+ALTURA_ESTANDAR_CAMPO = 50
+TAMAÑO_LETRA_NORMAL = 18
+TAMAÑO_LETRA_TITULO = 28
+
+
+ESTILO_DE_LETRA_NORMAL = ("Montserrat", TAMAÑO_LETRA_NORMAL)
+ESTILO_DE_LETRA_TITULO = ("Montserrat", TAMAÑO_LETRA_TITULO)
+
+set_default_color_theme("dark-blue")
+
 
 ventana = CTk()
-ventana.title("Elementos de una GUI")
+ventana.title("Titulo de la ventana")
 ventana.geometry("800x600")
 
-#   Configuramos 3 columnas
-ventana.grid_columnconfigure(0, weight=1)
-ventana.grid_columnconfigure(1, weight=1)
-ventana.grid_columnconfigure(2, weight=1)
 
-#   También configuramos 3 filas
+# acá se configuran las columnas, con el weight se le da un peso a cada columna,
+# para que se redimensionen de forma proporcional
+ventana.grid_columnconfigure(0, weight=1)
+
+
+# acá se configuran las filas, con el weight se le da un peso a cada fila,
+# para que se redimensionen de forma proporcional
 ventana.grid_rowconfigure(0, weight=1)
-ventana.grid_rowconfigure(1, weight=1)
-ventana.grid_rowconfigure(2, weight=1)
-ventana.grid_rowconfigure(3, weight=1)
+
+
+# acá se crea un frame, que es un contenedor para otros widgets
+# ------------------------------------------------------------------------------
+frame_contenedor = CTkFrame(
+    master=ventana,
+    fg_color=COLOR_BORDE,
+)
+frame_contenedor.grid(
+    row=0,
+    column=0,
+    sticky = "nsew",
+)
+
+frame_contenedor.grid_rowconfigure([0,1,2,3],weight=1)
+frame_contenedor.grid_columnconfigure([0,1,2],weight=1)
 
 
 #   Botón - CTkButton
@@ -24,7 +58,7 @@ def funcion_boton_1():
 
 
 boton_1 = CTkButton(
-    master=ventana,
+    master=frame_contenedor,
     width=80,
     height=30,
     corner_radius=0,
@@ -55,7 +89,7 @@ def funcion_botones_agrupados(value):
 valor_botones_agrupados = StringVar(value=None)
 
 botones_agrupados = CTkSegmentedButton(
-    master=ventana,
+    master=frame_contenedor,
     values=["Opción 1", "Opción 2", "Opción 3"],
     variable=valor_botones_agrupados,
     command=funcion_botones_agrupados,
@@ -76,7 +110,7 @@ def funcion_checkbox():
 valor_checkbox = BooleanVar(value=False)
 texto_checkbox = StringVar(value="¿Aceptas los términos")
 checkbox = CTkCheckBox(
-    master=ventana,
+    master=frame_contenedor,
     checkbox_width=40,
     checkbox_height=40,
     corner_radius=100,
@@ -105,7 +139,7 @@ def funcion_grupo_1_radios():
 
 valor_grupo_1_radios = IntVar(value=0)
 radiobutton_1 = CTkRadioButton(
-    master=ventana,
+    master=frame_contenedor,
     text="Opción 1",
     command=funcion_grupo_1_radios,
     value=1,
@@ -113,7 +147,7 @@ radiobutton_1 = CTkRadioButton(
     font=("Montserrat", 16),
 )
 radiobutton_2 = CTkRadioButton(
-    master=ventana,
+    master=frame_contenedor,
     text="Opción 2",
     command=funcion_grupo_1_radios,
     value=2,
@@ -136,14 +170,14 @@ radiobutton_2.grid(
 
 
 #   Menu de opciones 1 - CTkOptionMenu
-def funcion_menu_opciones(choice):
-    print(f"Has seleccionado {choice} del menu de opciones")
+def funcion_menu_opciones(seleccion):
+    print(f"Has seleccionado {seleccion} del menu de opciones")
 
 
-lista_opciones = ["ATITLAN", "ACATENANGO", "TIKAL","ROSTRO MAYA"]
+lista_opciones = ["ATITLAN", "ACATENANGO", "TIKAL", "ROSTRO MAYA"]
 valor_menu_opciones = StringVar(value="Seleccione una Opción")
 menu_opciones = CTkOptionMenu(
-    master=ventana,
+    master=frame_contenedor,
     width=180,
     corner_radius=0,
     dynamic_resizing=False,
@@ -160,14 +194,14 @@ menu_opciones.grid(
 
 
 #   ComboBox - CTkComboBox
-def funcion_combobox(choice):
-    print(f"Has selecionado {choice} en el combobox")
+def funcion_combobox(seleccion):
+    print(f"Has selecionado {seleccion} en el combobox")
     valor_combobox.get()
 
 
 valor_combobox = StringVar(value="Selecione una Opción")
 combobox = CTkComboBox(
-    master=ventana,
+    master=frame_contenedor,
     width=180,
     corner_radius=0,
     values=lista_opciones,
@@ -188,7 +222,7 @@ def al_presionar_enter(event):
 
 
 campo_texto = CTkEntry(
-    master=ventana,
+    master=frame_contenedor,
     width=180,
     corner_radius=0,
     placeholder_text="Escriba su nombre...",
@@ -202,7 +236,7 @@ campo_texto.grid(
 
 #   Caja de texto - CTkTextBox
 caja_texto = CTkTextbox(
-    master=ventana,
+    master=frame_contenedor,
     width=200,
     height=100,
     corner_radius=0,
@@ -215,7 +249,7 @@ caja_texto.grid(
 
 #   Etiqueta - CTkLabel
 etiqueta_1 = CTkLabel(
-    master=ventana,
+    master=frame_contenedor,
     fg_color="transparent",
     text="Esta es una etiqueta",
     font=("Montserrat", 16),
@@ -233,7 +267,7 @@ def funcion_slider(value):
 
 valor_slider = IntVar(value=0)
 slider = CTkSlider(
-    master=ventana,
+    master=frame_contenedor,
     from_=0,
     to=100,
     variable=valor_slider,
@@ -253,7 +287,7 @@ def funcion_switch():
 
 valor_switch = StringVar(value="off")
 switch = CTkSwitch(
-    master=ventana,
+    master=frame_contenedor,
     text="Texto Switch",
     command=funcion_switch,
     variable=valor_switch,
@@ -268,7 +302,7 @@ switch.grid(
 
 #   Barra Progreso - CTkProgressBar
 barra_progreso = CTkProgressBar(
-    master=ventana,
+    master=frame_contenedor,
     orientation="horizontal",
 )
 barra_progreso.grid(
@@ -276,4 +310,6 @@ barra_progreso.grid(
     column=2,
 )
 barra_progreso.start()
+
+
 ventana.mainloop()
