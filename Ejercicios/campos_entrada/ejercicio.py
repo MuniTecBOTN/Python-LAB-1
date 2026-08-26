@@ -89,7 +89,7 @@ sumar_1 = CTkButton(
     fg_color="#FF3300",
     font=("Montserrat", 16,"bold"),
     
-    command=sumar
+    command=sumar_1,
 )
 
 sumar_1.grid(

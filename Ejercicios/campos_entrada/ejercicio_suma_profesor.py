@@ -4,20 +4,29 @@ from customtkinter import *
 def funcion_boton_1():
     numero_a = campo_numero_a.get().strip()
     numero_b = campo_numero_b.get().strip()
+    campo_invalido = False
     
-    if not numero_a:
+    try:
+        numero_a = int(numero_a)
+    except ValueError:
         campo_numero_a.configure(border_color="red")
+        ventana.after(1000, lambda: campo_numero_a.configure(border_color="#e3e5f3"))
+        campo_invalido = True
+        
+        
+    try:
+        numero_b = int(numero_b)
+    except ValueError:  
+        campo_numero_b.configure(border_color="red")
+        ventana.after(1000, lambda: campo_numero_b.configure(border_color="#e3e5f3"))
+        campo_invalido = True
+
+    if campo_invalido:
         return
     else:
-        campo_numero_a.configure(border_color="#e3e5f3")
+        resultado = int(numero_a) + int(numero_b)
+        etiqueta_resultado.configure(text=str(resultado))
         
-        
-    if not numero_b:
-        campo_numero_b.configure(border_color="red")
-        return
-    else:        
-        campo_numero_b.configure(border_color="#e3e5f3")
-
 set_appearance_mode("light")
 set_default_color_theme("green")
 
